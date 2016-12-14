@@ -4,10 +4,22 @@ from unittest import TestCase as BaseTestCase
 import codecs
 import os
 from collections import defaultdict
+import logging
+import sys
 
 import testdata
 
 from plain import Article, Table
+
+
+# configure root logger
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+log_handler = logging.StreamHandler(stream=sys.stderr)
+log_formatter = logging.Formatter('[%(levelname).1s] %(message)s')
+log_handler.setFormatter(log_formatter)
+logger.addHandler(log_handler)
+
 
 
 class TestCase(BaseTestCase):
@@ -25,6 +37,8 @@ class ArticleTest(TestCase):
         a = Article("https://m.signalvnoise.com/best-buy-vs-the-apple-store-abb16cf342c0", html)
         path = testdata.create_file("foo.html", a.plain_html)
         # TODO -- test by length of plain html, that way if they change I can be alerted?
+        # TODO -- how about stripping all tags and making sure first and last words are
+        # correct, or title and sentence are there
         pout.v(path)
 
     def test_microdata(self):
@@ -40,6 +54,26 @@ class ArticleTest(TestCase):
     def test_generic(self):
         html = self.get_html("businessinsider.com")
         a = Article("http://www.businessinsider.com/lularoe-is-making-millennial-moms-rich-2016-9", html)
+        path = testdata.create_file("foo.html", a.plain_html)
+        pout.v(path)
+
+    def test_wordpress(self):
+        html = self.get_html("newyorker.com")
+        a = Article(
+            "http://www.newyorker.com/magazine/2016/12/19/gawkers-demise-and-the-trump-era-threat-to-the-first-amendment",
+            html
+        )
+        path = testdata.create_file("foo.html", a.plain_html)
+        pout.v(path)
+
+    def test_bloomberg(self):
+        html = self.get_html("bloomberg.com")
+        a = Article(
+            "https://www.bloomberg.com/news/articles/2013-04-24/how-many-hft-firms-actually-use-twitter-to-trade",
+            html
+        )
+        path = testdata.create_file("foo.html", a.plain_html)
+        pout.v(path)
 
 class TableTest(TestCase):
     def test_table(self):
