@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, division, print_function, absolute_import
 
+# TODO -- if I ever need a tld list, I can use the table parser on this:
+# https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains
 
 # key = tagname, value = list of attributes supported
 # common attributes are stored in "Global attribute" key
@@ -386,3 +388,4 @@ ATTRIBUTES = {
         "width"
     ]
 }
+

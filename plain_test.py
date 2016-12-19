@@ -6,10 +6,12 @@ import os
 from collections import defaultdict
 import logging
 import sys
+import json
 
 import testdata
 
 from plain import Article, Table
+from plain.parsers import Mercury
 
 
 # configure root logger
@@ -30,68 +32,124 @@ class TestCase(BaseTestCase):
             html = f.read()
         return html
 
+    def get_json(self, filename):
+        basepath = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
+        path = os.path.join(basepath, "testdata", "json", "{}.json".format(filename))
 
-class ArticleTest(TestCase):
-    def test_article(self):
-        html = self.get_html("medium.com")
-        a = Article("https://m.signalvnoise.com/best-buy-vs-the-apple-store-abb16cf342c0", html)
-        path = testdata.create_file("foo.html", a.plain_html)
-        # TODO -- test by length of plain html, that way if they change I can be alerted?
-        # TODO -- how about stripping all tags and making sure first and last words are
-        # correct, or title and sentence are there
-        pout.v(path)
+        with codecs.open(path, encoding='utf-8', mode='r') as f:
+            body = json.load(f)
+        return body
 
-    def test_microdata(self):
-        html = self.get_html("microdata_article")
-        a = Article("http://argbash.readthedocs.io/en/stable/guide.html", html)
-        path = testdata.create_file("foo.html", a.plain_html)
 
-        html = self.get_html("microdata_blog")
-        a = Article("http://blog.schema.org/2014/09/schemaorg-support-for-bibliographic_2.html", html)
-        path = testdata.create_file("foo.html", a.plain_html)
-        pout.v(path)
+class MercuryParserTest(TestCase):
+    def get_patched(self, filename):
+        """this patches a Mercury instance with what the api would return"""
+        fields = self.get_json(filename)
+        url = fields["url"]
+        m = Mercury(url)
+        class MockResponse(object):
+            status_code = 200
+            def json(slf):
+                return fields
 
-    def test_generic(self):
-        html = self.get_html("businessinsider.com")
-        a = Article("http://www.businessinsider.com/lularoe-is-making-millennial-moms-rich-2016-9", html)
-        path = testdata.create_file("foo.html", a.plain_html)
-        pout.v(path)
+        m_patched = testdata.patch(m, _fetch=lambda *args, **kwargs: MockResponse())
+        return m_patched
 
-    def test_wordpress(self):
-        html = self.get_html("newyorker.com")
-        a = Article(
-            "http://www.newyorker.com/magazine/2016/12/19/gawkers-demise-and-the-trump-era-threat-to-the-first-amendment",
-            html
+    def cache_json(self, url, filename):
+        m = Mercury(url)
+        m.fetch()
+        basepath = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
+        path = os.path.join(basepath, "testdata", "json", "{}.json".format(filename))
+
+        with codecs.open(path, encoding='utf-8', mode='w+') as f:
+            f.write(m.json())
+
+        return m
+
+    def test_fetch_bloomberg(self):
+        m = self.get_patched("bloomberg.com")
+        m.fetch()
+
+    def test_fetch_bi(self):
+        m = self.get_patched("businessinsider.com")
+        m.fetch()
+
+    def test_fetch_newyorker(self):
+        filename = "newyorker.com"
+        m = self.get_patched(filename)
+        m.fetch()
+
+    def test_fetch_medium(self):
+        filename = "signalvnoise.com"
+        m = self.get_patched(filename)
+        m.fetch()
+
+    def test_fetch_bespoke(self):
+        filename = "twistedmatrix.com"
+        m = self.get_patched(filename)
+        m.fetch()
+
+    def test_fetch_multipage(self):
+        filename = "uproxx.com"
+        m = self.get_patched(filename)
+        m.fetch()
+        pout.v(m.fields)
+
+    def test_fetch_uproxx(self):
+        filename = "uproxxpage.com"
+        m = self.get_patched(filename)
+        m.fetch()
+        pout.v(m.fields)
+        # uproxx should have a custom parser that looks for:
+        # <div class="uproxx_mp_sidebar_item  active" data-type="page" data-page="5">
+        # and adds that to the end of the url, so uproxx.com/.../5/ and requests that
+        # url, that will allow Mercury to fetch the whole article.
+
+#         m = self.cache_json(
+#             "http://uproxx.com/news/standing-rock-protests-motivations-history-interview/5/",
+#             filename
+#         )
+#         path = testdata.create_file("{}.html".format(filename), m.fields["content"])
+#         pout.v(path)
+
+
+
+    def xtest_fetch_foo(self):
+        filename = ""
+        m = self.cache_json(
+            "http://www.businessinsider.com/lularoe-is-making-millennial-moms-rich-2016-9",
+            filename
         )
-        path = testdata.create_file("foo.html", a.plain_html)
+        path = testdata.create_file("{}.html".format(filename), m.fields["content"])
         pout.v(path)
 
-    def test_bloomberg(self):
-        html = self.get_html("bloomberg.com")
-        a = Article(
-            "https://www.bloomberg.com/news/articles/2013-04-24/how-many-hft-firms-actually-use-twitter-to-trade",
-            html
-        )
-        path = testdata.create_file("foo.html", a.plain_html)
-        pout.v(path)
 
-class TableTest(TestCase):
-    def test_table(self):
-        """This is really here to generate the table, not so much to actually test anything"""
-        html = self.get_html("attributes")
-        t = Table("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes", html)
+#         html = self.get_html("medium.com")
+#         a = Article("https://m.signalvnoise.com/best-buy-vs-the-apple-store-abb16cf342c0", html)
+#         path = testdata.create_file("foo.html", a.plain_html)
+#         # TODO -- test by length of plain html, that way if they change I can be alerted?
+#         # TODO -- how about stripping all tags and making sure first and last words are
+#         # correct, or title and sentence are there
+#         pout.v(path)
 
-        r = defaultdict(list)
-        for d in t.data:
-            elements = d["Elements"].split(",")
-            for el in elements:
-                r[el.strip("<> ")].append(d["Attribute Name"])
 
-        for attr in ["class", "contenteditable", "data-*", "draggable", "id", "style", "tabindex"]:
-            r["Global attribute"].remove(attr)
-        #ga = r.pop("Global attribute")
-        #for k in r:
-        #    r[k].append(ga)
-        t.data = r
-        print(t.pretty())
-
+# class TableTest(TestCase):
+#     def test_table(self):
+#         """This is really here to generate the table, not so much to actually test anything"""
+#         html = self.get_html("attributes")
+#         t = Table("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes", html)
+# 
+#         r = defaultdict(list)
+#         for d in t.data:
+#             elements = d["Elements"].split(",")
+#             for el in elements:
+#                 r[el.strip("<> ")].append(d["Attribute Name"])
+# 
+#         for attr in ["class", "contenteditable", "data-*", "draggable", "id", "style", "tabindex"]:
+#             r["Global attribute"].remove(attr)
+#         #ga = r.pop("Global attribute")
+#         #for k in r:
+#         #    r[k].append(ga)
+#         t.data = r
+#         print(t.pretty())
+# 

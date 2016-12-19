@@ -4,9 +4,11 @@ import re
 from collections import defaultdict
 from urlparse import urlparse
 import os
+import json
 
 from bs4 import BeautifulSoup, element
 from bs4.element import NavigableString
+import requests
 
 from .data import ATTRIBUTES
 
@@ -28,180 +30,141 @@ class Attributes(object):
                 del self.element[attr]
 
 
-class Generic(object):
-    @property
-    def base_url(self):
-        """Returns the base host of the url so http://foo.com/bar would return http://foo.com"""
-        o = urlparse(self.url)
-        scheme = o.scheme
-        netloc = o.netloc
-        return "{}://{}".format(scheme, netloc)
-
+class Base(object):
     @property
     def soup(self):
         # https://www.crummy.com/software/BeautifulSoup/
         # docs: https://www.crummy.com/software/BeautifulSoup/bs4/doc/
         # bs4 codebase: http://bazaar.launchpad.net/~leonardr/beautifulsoup/bs4/files
-        # TODO -- static cache this? All parsing instances will use it, could
-        # keep a dict with url key and soup value. Probably not actually since
-        # each parser can change it
-        soup = BeautifulSoup(self.html, "html.parser")
+        soup = BeautifulSoup(self.fields["content"], "html.parser")
         return soup
 
-    def __init__(self, url, html):
+    def __init__(self, url):
         self.url = url
-        self.html = html
 
-    def parse(self):
-        ret_html = ""
-        self.article = self.find()
-        self.clean()
-        ret_html = self.article.prettify()
-        return ret_html
+    def fetch(self):
+        res = self._fetch()
+        if res.status_code >= 400:
+            raise IOError("Problem fetching {}, code {}".format(self.url, res.status_code))
 
-    def find(self):
-        # find p1, move to closest parent div, count <p>s, the div that has the
-        # most child divs wins
+        return self.simplify(res)
 
-        # go through all p tags, travel up until you find parent div, place parent
-        # div in dict with counter, div that has the highest count wins, you will have
-        # to go all the way up to the last parent to make sure there isn't a different
-        # div that encompasses the found div, every div encountered gets a 
+    def _fetch(self):
+        raise NotImplementedError()
+
+
+    def simplify(self, response):
+        """simplify what was returned from requests
+
+        :param response: a requests response object
+        """
+        self.fields = self._simplify(response) # keep the api consistent for the future
+
         soup = self.soup
+        self.simplify_tags(soup)
+        self.simplify_attrs(soup)
+        #self.fields["content"] = soup.prettify(formatter=self.simplify_strings)
+        self.fields["content"] = soup.prettify(formatter=None)
 
-        parents_d = defaultdict(lambda: dict(count=0, instance=None, children=set()))
-        for tag in soup.find_all("p"):
-            children = set([id(tag)])
-            for parent in tag.parents:
-                if parent.name not in set(["p", "body", "html"]):
-                    key = id(parent)
-                    parents_d[key]["count"] += 1
-                    parents_d[key]["key"] = key
-                    parents_d[key]["instance"] = parent
-                    parents_d[key]["children"] |= children
-                    children.add(key)
+    def _simplify(self, response):
+        """handle converting the requests response to a nice dictionary
 
-        # alright, now we wind the parent with the most p tags
-        most_d = {"count": 0}
-        for key, pd in parents_d.items():
-            if pd["count"] > most_d["count"]:
-                most_d = pd
+        :param response: a requests response instance from a HTTP request
+        :returns: a dictionary containing keys like 'content'
+        """
+        raise NotImplementedError()
 
-            elif pd["count"] == most_d["count"]:
-                if most_d["key"] not in pd["children"]:
-                    most_d = pd
+    def json(self):
+        """returns this instance as a nicely formatted json string"""
+        return json.dumps(self.fields, sort_keys=True, indent=4)
 
+    def simplify_strings(self, s):
+        pout.v(s)
+        return s
 
-        if most_d["count"] > 0:
-            el = most_d["instance"]
-
-        return el
-
-
-    def clean(self):
-        # remove unwanted elements
-        element = self.article
-        for ename in ["script", "iframe", "form", "input", "textarea", "button", "aside"]:
-            # TODO account for instagram and youtube embeds
+    def simplify_tags(self, element):
+        remove_tags = [
+            "script",
+            "iframe",
+            "form",
+            "input",
+            "textarea",
+            "button",
+            "aside",
+        ]
+        for ename in remove_tags:
+            # TODO account for instagram and youtube embeds?
             tag = element.find(ename)
             while tag:
                 tag.decompose()
                 tag = element.find(ename)
 
-        tag = element
-        while tag:
-            if not isinstance(tag, NavigableString):
-                attr = Attributes(tag)
-                attr.clean()
-            tag = tag.next_element
+        return element
 
-        for tag in element.find_all("img"):
-            tag["src"] = self.absolute_url(tag["src"])
-
-    def absolute_url(self, href):
-        absolute_url = href
-        if not re.match(r"^\S+:\/\/", href) and not href.startswith("data:"):
-            if href.startswith("/"):
-                absolute_url = "{}{}".format(self.base_url, href)
-
-            else:
-                hp = href
-                if not hp.startswith("."):
-                    hp = "./{}".format(hp)
-
-                o = urlparse(self.url)
-                path = os.path.normpath("{}{}".format(o.path, hp))
-                absolute_url = urlparse.urlunparse(
-                    o.scheme,
-                    o.netloc,
-                    path,
-                    o.params,
-                    o.query,
-                    o.fragment
-                )
-
-        return absolute_url
+    def simplify_attrs(self, element):
+        for tag in element:
+            while tag:
+                if not isinstance(tag, NavigableString):
+                    attr = Attributes(tag)
+                    attr.clean()
+                tag = tag.next_element
+                #tag = tag.next
 
 
-class Article(Generic):
-    def find(self):
-        soup = self.soup
-        el = soup.find("article")
-        if el:
-            header = el.find("header")
-            if header:
-                header.decompose()
+class Mercury(Base):
+    """Wrapper class around Readability's mercury parsing api
 
-            footer = el.find("footer")
-            if footer:
-                footer.decompose()
+    https://mercury.postlight.com
 
-        return el
+    a response typically looks like this:
 
-
-class MicroData(Generic):
-    """Handles schema.org pages, currently supports Article and BlogPosting
-
-    http://schema.org/
-    http://schema.org/Article
-    http://schema.org/BlogPosting
+        {
+            'domain': u"example.com",
+            'rendered_pages': 1,
+            'author': u"...",
+            'url': u"https://example.com/some/permalink",
+            'excerpt': u"...",
+            'title': u"...",
+            'lead_image_url': u"https://example.com/some/image.jpg",
+            'direction': u"ltr",
+            'word_count': 1145,
+            'total_pages': 1,
+            'content': "..."
+            'date_published': u"2013-04-24T00:00:00.000Z",
+            'dek': None,
+            'next_page_url': None
+        }
     """
-    def find(self):
-        soup = self.soup
-        el = soup.find("div", {"itemtype": "http://schema.org/Article"})
-        if not el:
-            el = soup.find("div", {"itemtype": "http://schema.org/BlogPosting"})
+    def _fetch(self):
+        headers = {
+            "x-api-key": os.environ["PLAIN_MERCURY_KEY"],
+        }
+        params = {
+            "url": self.url
+        }
 
-        if el:
-            # we need to make sure the schema isn't bogus and actually contains the
-            # body of the post
-            regex = re.compile("articleBody")
-            tag = el.find("div", {"itemprop": regex})
-            if not tag:
-                tag = el.find("p", {"itemprop": regex})
+        return requests.get(
+            "https://mercury.postlight.com/parser",
+            params=params,
+            headers=headers
+        )
 
-            if tag:
-                # get rid of any micro data meta tags
-                # for some reason I can't use find_all() and have the tags actually remove
-                tag = el.find("meta")
-                while tag:
-                    tag.decompose()
-                    tag = el.find("meta")
-                #for tag in el.find_all("meta"):
-                #    tag.decompose()
-
-        return el
+    def _simplify(self, response):
+        d = response.json()
+        return d
 
 
-# class TitleInfer(Generic):
-#     """This will try and discover the body by looking for <h1>, <h2>, or <h3> tag"""
-#     def parse(self):
-#         ret_html = ""
-#         soup = self.soup
-#         el = soup.find("div", {"itemtype": "http://schema.org/Article"})
 
 
-class Table(Generic):
+
+
+
+
+
+
+
+
+class Table(Base):
     def parse(self):
         # http://stackoverflow.com/questions/11790535/extracting-data-from-html-table
         datasets = []
