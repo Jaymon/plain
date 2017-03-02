@@ -31,6 +31,58 @@ class Attributes(object):
 
 
 class Base(object):
+    def __init__(self, url, body=""):
+        self.url = url
+        self.body = body
+
+    def parse(self):
+        """This is the public facing method where all the magic happens, instantiate
+        an instance of a subclass and then call this method
+
+        :returns: a dict of values pulled from the url including "content" key
+        """
+        if not self.body:
+            res = self.fetch()
+            self.body = self._parse(res)
+
+        self.simplify(self.body)
+
+        return self.fields
+
+    def _parse(self, response):
+        """Given a response object return what you want this class's body to contain"""
+        return response.content
+
+    def fetch(self):
+        res = self._fetch()
+        if res.status_code >= 400:
+            raise IOError("Problem fetching {}, code {}".format(self.url, res.status_code))
+
+        return res
+
+    def _fetch(self):
+        return requests.get(self.url)
+
+    def simplify(self, body):
+        """simplify what was returned from requests
+
+        :param response: a requests response object
+        """
+        self.fields = self._simplify(body)
+
+    def _simplify(self, body):
+        """handle converting the requests response to a nice dictionary
+
+        :param body: the body to be simplified, self.body passed in for convenience
+        :returns: whatever you want in self.fields
+        """
+        raise NotImplementedError()
+
+    def json(self):
+        """returns this instance as a nicely formatted json string"""
+        return json.dumps(self.fields, sort_keys=True, indent=4)
+
+class Article(Base):
     @property
     def soup(self):
         # https://www.crummy.com/software/BeautifulSoup/
@@ -39,50 +91,71 @@ class Base(object):
         soup = BeautifulSoup(self.fields["content"], "html.parser")
         return soup
 
-    def __init__(self, url):
-        self.url = url
-
-    def fetch(self):
-        res = self._fetch()
-        if res.status_code >= 400:
-            raise IOError("Problem fetching {}, code {}".format(self.url, res.status_code))
-
-        return self.simplify(res)
-
-    def _fetch(self):
-        raise NotImplementedError()
-
-
     def simplify(self, response):
         """simplify what was returned from requests
 
         :param response: a requests response object
         """
-        self.fields = self._simplify(response) # keep the api consistent for the future
+        self.fields = self._simplify(response)
 
         soup = self.soup
+        self.simplify_document(soup)
         self.simplify_tags(soup)
         self.simplify_attrs(soup)
         #self.fields["content"] = soup.prettify(formatter=self.simplify_strings)
         self.fields["content"] = soup.prettify(formatter=None)
 
-    def _simplify(self, response):
-        """handle converting the requests response to a nice dictionary
+#     def simplify_strings(self, s):
+#         pout.v(s)
+#         return s
 
-        :param response: a requests response instance from a HTTP request
-        :returns: a dictionary containing keys like 'content'
+
+    def simplify_document(self, element):
+        """simplify the structure of the document, by default this just gets rid of
+        top level <div> and <article> elements so we basically have one level of <p>
+
+        :param element: the beautiful soup [document] root
         """
-        raise NotImplementedError()
+        #pout.v(element.name)
+        #pout.v(element.contents[0].name)
+        if element.name == "[document]":
+            contents = element.contents
+            if len(contents) == 1:
+                self.simplify_structure(element.contents[0])
 
-    def json(self):
-        """returns this instance as a nicely formatted json string"""
-        return json.dumps(self.fields, sort_keys=True, indent=4)
+#             while len(element.contents) == 1 and element.contents[0].name in ["div", "article"]:
+#                 pout.v(element.contents[0].name)
+#                 el = element.contents[0]
+#                 el.unwrap()
+# 
+#         pout.v(len(element.contents), [el.name for el in element.contents])
+        return element
 
-    def simplify_strings(self, s):
-        pout.v(s)
-        return s
+    def simplify_structure(self, element):
+        """The recursive method simpilify_document uses to get rid of stuff"""
+        if not element: return
+        if not element.name in ["div", "article"]: return
+
+        contents = []
+        for el in element.contents:
+            if el.name is None:
+                # we have a string
+                if not el.string.isspace():
+                    contents.append(el)
+
+            else:
+                contents.append(el)
+
+        #pout.v(element.name, len(contents), [el.name for el in contents])
+
+        if len(contents) == 1:
+            self.simplify_structure(contents[0])
+
+        #pout.v("unwrapping")
+        element.unwrap()
 
     def simplify_tags(self, element):
+        # remove tags get completely removed from the tree, strings and all
         remove_tags = [
             "script",
             "iframe",
@@ -99,6 +172,17 @@ class Base(object):
                 tag.decompose()
                 tag = element.find(ename)
 
+        # unwrapped tags are removed but strings between <tag> and </tag> are kept
+        unwrap_tags = [
+            "span",
+            "meta"
+        ]
+        for ename in unwrap_tags:
+            tag = element.find(ename)
+            while tag:
+                tag.unwrap()
+                tag = element.find(ename)
+
         return element
 
     def simplify_attrs(self, element):
@@ -111,7 +195,7 @@ class Base(object):
                 #tag = tag.next
 
 
-class Mercury(Base):
+class Mercury(Article):
     """Wrapper class around Readability's mercury parsing api
 
     https://mercury.postlight.com
@@ -149,19 +233,9 @@ class Mercury(Base):
             headers=headers
         )
 
-    def _simplify(self, response):
+    def _parse(self, response):
         d = response.json()
         return d
-
-
-
-
-
-
-
-
-
-
 
 
 class Table(Base):

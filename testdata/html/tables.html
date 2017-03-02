@@ -1,0 +1,1042 @@
+
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr" class="redesign no-js" data-ffo-opensans="false" data-ffo-opensanslight="false">
+<head prefix="og: http://ogp.me/ns#">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <script>(function(d) { d.className = d.className.replace(/\bno-js/, ''); })(document.documentElement);</script>
+  
+    
+  
+
+  
+  <title>Block-level elements - HTML | MDN</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="index, follow">
+    <link rel="home" href="/en-US/">
+    <link rel="copyright" href="#copyright">
+  
+
+  
+    
+    
+    <link href="https://developer.cdn.mozilla.net/static/build/styles/mdn.07c1cb24024c.css" rel="stylesheet" type="text/css" />
+
+    
+  
+    <link href="https://developer.cdn.mozilla.net/static/build/styles/wiki.34fbb8f41f76.css" rel="stylesheet" type="text/css" />
+
+    
+
+    <!-- common social tags -->
+    
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://developer.cdn.mozilla.net/static/img/opengraph-logo.dc4e08e2f6af.png">
+    <meta property="og:site_name" content="Mozilla Developer Network">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:image" content="https://developer.cdn.mozilla.net/static/img/opengraph-logo.dc4e08e2f6af.png">
+    <meta name="twitter:site" content="@MozDevNet">
+    <meta name="twitter:creator" content="@MozDevNet">
+    <link rel="search" type="application/opensearchdescription+xml" href="https://developer.mozilla.org/en-US/search/xml" title="Mozilla Developer Network">
+  
+
+  <!-- third-generation iPad with high-resolution Retina display: -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://developer.cdn.mozilla.net/static/img/favicon144.a6e4162070f4.png">
+  <!-- iPhone with high-resolution Retina display: -->
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://developer.cdn.mozilla.net/static/img/favicon114.0e9fabd44f85.png">
+  <!-- first- and second-generation iPad: -->
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://developer.cdn.mozilla.net/static/img/favicon72.8ff9d87c82a0.png">
+  <!-- non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+  <link rel="apple-touch-icon-precomposed" href="https://developer.cdn.mozilla.net/static/img/favicon57.a2490b9a2d76.png">
+  <!-- basic favicon -->
+  
+    
+  
+  <link rel="shortcut icon" href="https://developer.cdn.mozilla.net/static/img/favicon32.e02854fdcf73.png">
+  <!--[if IE]>
+  <meta http-equiv="imagetoolbar" content="no">
+  <script type="text/javascript" src="https://developer.cdn.mozilla.net/static/build/js/html5shiv.3948ccddab6f.js" charset="utf-8"></script>
+  <![endif]-->
+
+  <script type="text/javascript" src="https://developer.cdn.mozilla.net/static/build/js/font-check.77286577b47f.js" charset="utf-8"></script>
+
+  
+  <link rel="alternate" type="application/json" href="/en-US/docs/Web/HTML/Block-level_elements$json">
+  <link rel="canonical" href="https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements" >
+
+  
+    
+      <link rel="alternate" hreflang="bn-BD" href="/bn-BD/docs/Web/HTML/Block-level_elements" title="Block-level elements">
+    
+      <link rel="alternate" hreflang="ca" href="/ca/docs/Web/HTML/Block-level_elements" title="Elements a nivell de bloc">
+    
+      <link rel="alternate" hreflang="de" href="/de/docs/Web/HTML/Block-level_elemente" title="Block-Level Elemente">
+    
+      <link rel="alternate" hreflang="es" href="/es/docs/Web/HTML/Block-level_elements" title="Elementos en bloque">
+    
+      <link rel="alternate" hreflang="fr" href="/fr/docs/Web/HTML/%C3%89l%C3%A9ments_en_bloc" title="Éléments de bloc">
+    
+      <link rel="alternate" hreflang="ja" href="/ja/docs/Web/HTML/Block-level_elements" title="ブロックレベル要素">
+    
+      <link rel="alternate" hreflang="ko" href="/ko/docs/HTML/Block-level_elements" title="블럭-레벨 요소들">
+    
+      <link rel="alternate" hreflang="pl" href="/pl/docs/Web/HTML/Elementy_blokowe" title="Elementy blokowe">
+    
+      <link rel="alternate" hreflang="pt-BR" href="/pt-BR/docs/Web/HTML/Elementos_nlock-level" title="Elementos block-level">
+    
+      <link rel="alternate" hreflang="ru" href="/ru/docs/Web/HTML/Block-level_elements" title="Блочные элементы">
+    
+      <link rel="alternate" hreflang="zh-CN" href="/zh-CN/docs/Web/HTML/Block-level_elements" title="块级元素">
+    
+  
+
+  <!-- document-specific social tags -->
+  <meta property="og:title" content="Block-level elements">
+  <meta property="og:url" content="https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements">
+  <meta name="twitter:url" content="https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements">
+  <meta name="twitter:title" content="Block-level elements">
+  
+  <meta property="og:description" content="HTML (Hypertext Markup Language) elements are usually either &#34;block-level&#34; elements or &#34;inline&#34; elements. A block-level element occupies the entire space of its parent element (container), thereby creating a &#34;block.&#34; This article helps to explain what this means.">
+  <meta name="description" content="HTML (Hypertext Markup Language) elements are usually either &#34;block-level&#34; elements or &#34;inline&#34; elements. A block-level element occupies the entire space of its parent element (container), thereby creating a &#34;block.&#34; This article helps to explain what this means.">
+  <meta name="twitter:description" content="HTML (Hypertext Markup Language) elements are usually either &#34;block-level&#34; elements or &#34;inline&#34; elements. A block-level element occupies the entire space of its parent element (container), thereby creating a &#34;block.&#34; This article helps to explain what this means.">
+  
+
+  
+  <script type="text/javascript">
+    
+      var document_saved = 0;
+    
+  </script>
+
+
+
+  
+    
+
+<script type="text/javascript">
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-36116321-5', 'mozilla.org');
+    ga('set', 'anonymizeIp', true);
+
+    
+
+    // dimension9 == "Section editing"
+    
+        ga('set', 'dimension9', 'Enabled');
+    
+        // dimension12 == 'Page Revision"
+        ga('set', 'dimension12', '1174805');
+
+    (function() {
+        // http://cfsimplicity.com/61/removing-analytics-clutter-from-campaign-urls
+        var win = window;
+        var removeUtms = function(){
+            var location = win.location;
+            if (location.href.indexOf('utm') != -1 && win.history.replaceState) {
+                win.history.replaceState({}, '', location.pathname);
+            }
+        };
+
+        ga('send', 'pageview', {'hitCallback': removeUtms});
+    })();
+</script>
+
+  
+</head>
+<body data-slug="Web/HTML/Block-level_elements" contextmenu="edit-history-menu" data-search-url="" class="document  ">
+
+  <script type="text/javascript">
+    // make sure global mdn object exists
+    var mdn = window.mdn || {};
+
+    (function(win) {
+        'use strict';
+
+        
+            (function(){
+  var FLAGS = {
+    'compat_api': false,'kumaediting': false,'page_move': false,'registration_disabled': false,'search_suggestions': false,'section_edit': true,'sg_task_completion': false,'spam_admin_override': false,'spam_checks_enabled': true,'spam_spammer_override': false,'spam_submissions_enabled': false,'spam_testing_mode': false,'wiki_samples': true,'wiki_spam_exempted': false,'wiki_spam_training': false
+    },
+    SWITCHES = {
+    'wiki_error_on_delete': false,'wiki_force_immediate_rendering': false,'enable_optimizely': false,'welcome_email': true,'application_ACAO': true,'store_revision_ips': true,'dumb_doc_urls': true,'newsletter': true,'newsletter_article': true,'foundation_callout': false,'helpful-survey-2': true
+    },
+    SAMPLES = {
+    
+    };
+  window.waffle = {
+    "flag_is_active": function waffle_flag(flag_name) {
+      
+      return !!FLAGS[flag_name];
+    },
+    "switch_is_active": function waffle_switch(switch_name) {
+      
+      return !!SWITCHES[switch_name];
+    },
+    "sample_is_active": function waffle_sample(sample_name) {
+      
+      return !!SAMPLES[sample_name];
+    },
+    "FLAGS": FLAGS,
+    "SWITCHES": SWITCHES,
+    "SAMPLES": SAMPLES
+  };
+})();
+
+        
+
+        // This needs to be set before ckeditor.js loads
+        window.CKEDITOR_BASEPATH = '/static/js/libs/ckeditor/build/ckeditor/';
+
+        // Site configuration
+        win.mdn.ckeditor = {};
+        win.mdn.features = {};
+        win.mdn.staticPath = 'https://developer.cdn.mozilla.net/static/';
+        win.mdn.optimizely = win['optimizely'] || [];
+        win.mdn.wiki = {
+            autosuggestTitleUrl: '/en-US/docs/get-documents'
+        };
+        win.mdn.assets = {
+            css: {
+                'editor-content': ['https://developer.cdn.mozilla.net/static/build/styles/editor-content.f2a4147c2c28.css',],
+                'wiki-compat-tables': ['https://developer.cdn.mozilla.net/static/build/styles/wiki-compat-tables.6bcbd7e219b5.css',]
+            },
+            js: {
+                'syntax-prism': ['https://developer.cdn.mozilla.net/static/build/js/syntax-prism.66bd4038bff3.js',],
+                'wiki-compat-tables': ['https://developer.cdn.mozilla.net/static/build/js/wiki-compat-tables.14ce5dcb2c3d.js',]
+            }
+        };
+
+        win.mdn.notifications = [];
+
+        
+    })(this);
+</script>
+
+  
+
+  <ul id="nav-access">
+    <li><a href="#document-main" id="skip-main">Skip to main content</a></li>
+    <li><a id="skip-language" href="#language">Select language</a></li>
+    <li><a href="#q" id="skip-search">Skip to search</a></li>
+  </ul>
+
+  <!-- Header -->
+  <header id="main-header"><div class="center">
+
+    <div id="tabzilla">
+        <a href="//www.mozilla.org/" class="no-track">mozilla</a>
+    </div>
+
+    <div class="clear header-clear"></div>
+
+
+    <a href="/en-US/" class="logo">Mozilla Developer Network</a>
+
+
+    <div id="nav-sec">
+        
+                  <ul>
+                  <li><div class="login">
+    
+      
+       <a href="/users/github/login/?next=%2Fen-US%2Fdocs%2FWeb%2FHTML%2FBlock-level_elements" class="login-link js-login-link" data-service="GitHub">
+        Sign in
+        <i class="icon-github" aria-hidden="true"></i>
+      </a>
+    
+</div></li>
+                </ul>
+        
+    </div>
+
+    <nav id="main-nav" role="navigation"><ul><li><a href="/en-US/docs/Web">Web Technologies<i aria-hidden="true" class="icon-caret-down"></i></a>
+
+        <div class="submenu submenu-cols-2 js-submenu" id="nav-platform-submenu">
+          <div class="submenu-column">
+            <div class="title">Technologies</div>
+            <ul>
+              <li><a href="/en-US/docs/Web/HTML">HTML</a></li>
+              <li><a href="/en-US/docs/Web/CSS">CSS</a></li>
+              <li><a href="/en-US/docs/Web/JavaScript">JavaScript</a></li>
+              <li><a href="/en-US/docs/Web/Guide/Graphics">Graphics</a></li>
+              <li><a href="/en-US/docs/Web/HTTP">HTTP</a></li>
+              <li><a href="/en-US/docs/Web/API">APIs / DOM</a></li>
+              <li><a href="/en-US/docs/Mozilla/Add-ons/WebExtensions">WebExtensions</a></li>
+              <li><a href="/en-US/docs/Web/MathML">MathML</a></li>
+            </ul>
+          </div><div class="submenu-column last">
+            <div class="title">References & Guides</div>
+            <ul>
+              <li><a href="/en-US/docs/Learn">Learn web development</a></li>
+              <li><a href="/en-US/docs/Web/Tutorials">Tutorials</a></li>
+              <li><a href="/en-US/docs/Web/Reference">References</a></li>
+              <li><a href="/en-US/docs/Web/Guide">Developer Guides</a></li>
+              <li><a href="/en-US/docs/Web/Accessibility">Accessibility</a></li>
+              <li><a href="/en-US/docs/Games">Game development</a></li>
+              <li><a href="/en-US/docs/Web">...more docs</a></li>
+            </ul>
+          </div>
+        </div>
+      </li><li><a href="/en-US/docs/Zones">Mozilla Docs<i aria-hidden="true" class="icon-caret-down"></i></a>
+
+        <div class="submenu js-submenu" id="nav-zones-submenu">
+          <div class="submenu-column">
+            <ul>
+              <li><a href="/en-US/docs/Mozilla/Add-ons">Add-ons</a></li>
+              <li><a href="/en-US/docs/Mozilla/Firefox">Firefox</a></li>
+            </ul>
+          </div>
+        </div>
+      </li><li><a href="/en-US/docs/Tools">Developer Tools</a></li><li><a href="/en-US/docs/MDN/Feedback">Feedback<i aria-hidden="true" class="icon-caret-down"></i></a>
+
+        <div class="submenu js-submenu" id="nav-contact-submenu">
+          <div class="submenu-column">
+            <ul>
+                <li><a href="https://support.mozilla.org/">Get Firefox help<i aria-hidden="true" class="icon-external-link"></i></a></li>
+                <li><a href="http://stackoverflow.com/">Get web development help<i aria-hidden="true" class="icon-external-link"></i></a></li>
+            </ul>
+            <ul>
+              <li><a href="/en-US/docs/MDN/Community">Join the MDN community</a></li>
+              <li><a target="_blank" href="https://bugzilla.mozilla.org/form.doc?bug_file_loc=https%3A//developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements">Report a content problem<i aria-hidden="true" class="icon-external-link"></i></a></li>
+              <li><a target="_blank" href="https://bugzilla.mozilla.org/form.mdn">Report a bug<i aria-hidden="true" class="icon-external-link"></i></a></li>
+            </ul>
+          </div>
+        </div>
+
+      </li><li class="nav-search-link"><a href="/en-US/search" title="Search"><i aria-hidden="true" class="icon-search"></i></a></li><li class="main-nav-search"><form action="/en-US/search" method="get" role="search">
+        <div class="search-wrap">
+          <label for="main-q" class="offscreen">Search</label>
+          <input type="search" id="main-q" name="q" placeholder="Search" data-value="" value="" />
+          <span class="search-trigger"><i aria-hidden="true" class="icon-search"></i></span>&nbsp;
+          <button type="submit" class="offscreen">Search</button>
+        </div>
+      </form></li></ul></nav>
+  </div></header>
+
+  <!-- Content will go here -->
+  <main id="content"><div class="center clear">
+  
+
+   <!-- end is_zone -->
+
+
+    <div class="wiki-main-content" id="document-main"><div class="center">
+      
+      <div class="article-meta">
+        <!-- action buttons -->
+        
+
+  
+    
+  
+
+  
+    
+  
+
+  
+
+  <ul class="page-buttons" data-sticky="false">
+      
+      <li><button id="languages-menu" class="transparent" aria-haspopup="true" aria-owns="languages-menu-submenu" aria-expanded="false"><span>Languages</span><i aria-hidden="true" class="icon-language"></i></button>
+
+        <div class="submenu js-submenu" id="languages-menu-submenu">
+          <div class="submenu-column">
+            <ul id="translations">
+              
+                
+                
+                
+                  <li><bdi><a rel="internal" href="/bn-BD/docs/Web/HTML/Block-level_elements" title="Bengali (Bangladesh)">বাংলা (বাংলাদেশ) (bn-BD)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="/ca/docs/Web/HTML/Block-level_elements" title="Catalan">Català (ca)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="/de/docs/Web/HTML/Block-level_elemente" title="German">Deutsch (de)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="/es/docs/Web/HTML/Block-level_elements" title="Spanish">Español (es)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="/fr/docs/Web/HTML/%C3%89l%C3%A9ments_en_bloc" title="French">Français (fr)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="/ja/docs/Web/HTML/Block-level_elements" title="Japanese">日本語 (ja)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="/ko/docs/HTML/Block-level_elements" title="Korean">한국어 (ko)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="/pl/docs/Web/HTML/Elementy_blokowe" title="Polish">Polski (pl)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="/pt-BR/docs/Web/HTML/Elementos_nlock-level" title="Portuguese (Brazilian)">Português (do Brasil) (pt-BR)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="/ru/docs/Web/HTML/Block-level_elements" title="Russian">Русский (ru)</a></bdi></li>
+                
+                  <li><bdi><a rel="internal" href="/zh-CN/docs/Web/HTML/Block-level_elements" title="Chinese (Simplified)">中文 (简体) (zh-CN)</a></bdi></li>
+                
+              
+
+              
+                <li><a href="/en-US/docs/Web/HTML/Block-level_elements$locales" rel="nofollow, noindex" id="translations-add">Add a translation</a></li>
+              
+            </ul>
+          </div>
+        </div>
+      </li>
+
+      
+      <li class="page-buttons-edit"><a href="/en-US/docs/Web/HTML/Block-level_elements$edit" class="button" data-optimizely-hook="button-edit-doc" id="edit-button" rel="nofollow, noindex">Edit<i aria-hidden="true" class="icon-pencil"></i></a></li>
+      
+
+        
+
+        <li><button id="advanced-menu" class="only-icon" aria-haspopup="true" aria-owns="advanced-menu-submenu" aria-expanded="false"><span>Advanced</span><i aria-hidden="true" class="icon-cog"></i></button>
+        <div class="submenu js-submenu" id="advanced-menu-submenu">
+          <!-- this page -->
+          <div class="submenu-column">
+            <div class="title">Advanced</div>
+            <ul>
+                <li><a href="/en-US/docs/Web/HTML/Block-level_elements$history" rel="nofollow, noindex">History</a></li>
+                
+                
+                
+
+
+                
+
+                
+                
+                
+                <li class="page-print"><a href="#" onclick="return window.print();">Print this article</a></li>
+            </ul>
+          </div>
+        </div>
+  </li></ul>
+
+        <!-- crumbs -->
+        
+  <nav class="crumbs" role="navigation"><ol xmlns:v="http://rdf.data-vocabulary.org/#" aria-label="breadcrumbs">
+    <li typeof="v:Breadcrumb"><a href="/en-US" rel="v:url" property="v:title">MDN</a></li>
+    
+      <li class="crumb" typeof="v:Breadcrumb"><a href="/en-US/docs/Web" rel="v:url" property="v:title">Web technology for developers</a></li>
+    
+      <li class="crumb" typeof="v:Breadcrumb"><a href="/en-US/docs/Web/HTML" rel="v:url" property="v:title">HTML</a></li>
+    
+    <li class="crumb" typeof="v:Breadcrumb" property="v:title">Block-level elements</li>
+  </ol></nav>
+      </div>
+
+      <!-- heading -->
+      <div id="wiki-document-head" class="document-head">
+          <span class="from-search-previous-box">
+            <a class="button from-search-previous only-icon disabled" title="Previous Search Result" data-empty-title="No Previous Search Result"><i aria-hidden="true" class="icon-chevron-left"></i></a>
+          </span>
+          <span class="from-search-navigate-wrap">
+            <a href="#" class="from-search-navigate"><span class="from-search-navigate-up"><i aria-hidden="true" class="icon-double-angle-up"></i></span><span class="from-search-navigate-down"><i aria-hidden="true" class="icon-double-angle-down"></i></span></a>
+          </span>
+          <div class="from-search-toc submenu">
+            <span class="title">Your Search Results</span>
+            <ol></ol>
+          </div>
+          <span class="from-search-next-box">
+            <a class="button from-search-next only-icon disabled" title="Next Search Result" data-empty-title="No Previous Search Result"><i aria-hidden="true" class="icon-chevron-right"></i></a>
+          </span>
+
+        
+        <div class="contributor-avatars" data-all-text="see all contributors" data-alternate-message="hide contributors" data-has-hidden="1">
+            <ul>
+            
+                <li class="shown">
+                <a href="/en-US/profiles/rudijuri" title="View profile: rudijuri">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="rudijuri" data-src="https://secure.gravatar.com/avatar/a11eab62a645714bdfb83f69cc195242?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">rudijuri</noscript></a>
+                </li>
+            
+                <li class="shown">
+                <a href="/en-US/profiles/SphinxKnight" title="View profile: SphinxKnight">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="SphinxKnight" data-src="https://secure.gravatar.com/avatar/8fb358ea9b7af22f5021a29e122ea069?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">SphinxKnight</noscript></a>
+                </li>
+            
+                <li class="shown">
+                <a href="/en-US/profiles/masonwu311" title="View profile: masonwu311">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="masonwu311" data-src="https://secure.gravatar.com/avatar/b13e083f8f39bbeb6d22100da94a06bd?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">masonwu311</noscript></a>
+                </li>
+            
+                <li class="shown">
+                <a href="/en-US/profiles/ktajpuri" title="View profile: ktajpuri">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="ktajpuri" data-src="https://secure.gravatar.com/avatar/60e5ac0440cf03b3d88f4f749c3fe418?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">ktajpuri</noscript></a>
+                </li>
+            
+                <li class="shown">
+                <a href="/en-US/profiles/teoli" title="View profile: teoli">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="teoli" data-src="https://secure.gravatar.com/avatar/d0d90148e08e3b64ccf75c46f31442c5?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">teoli</noscript></a>
+                </li>
+            
+                <li class="shown">
+                <a href="/en-US/profiles/rawrmonstar" title="View profile: rawrmonstar">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="rawrmonstar" data-src="https://secure.gravatar.com/avatar/89aa0d3cfcf6386df4ebd793d9391567?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">rawrmonstar</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/robhudson" title="View profile: robhudson">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="robhudson" data-src="https://secure.gravatar.com/avatar/c9cdf4aaa5fb7888bd8b52d3a6a16004?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">robhudson</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/jswisher" title="View profile: jswisher">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="jswisher" data-src="https://secure.gravatar.com/avatar/38185c2812cbcae186ebbe4a82910661?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">jswisher</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/technoAri" title="View profile: technoAri">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="technoAri" data-src="https://secure.gravatar.com/avatar/a77d3296114f0eaf71f88434d071b5e2?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">technoAri</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/vjdhama" title="View profile: vjdhama">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="vjdhama" data-src="https://secure.gravatar.com/avatar/c2ab16e7bad14de2336741347b36c2cf?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">vjdhama</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/RylanH" title="View profile: RylanH">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="RylanH" data-src="https://secure.gravatar.com/avatar/dab7613405bd4f288cbc6a1420000956?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">RylanH</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/rufusbuck77" title="View profile: rufusbuck77">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="rufusbuck77" data-src="https://secure.gravatar.com/avatar/b040d282458f0486fa225894d7b880b6?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">rufusbuck77</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/appsforartists" title="View profile: appsforartists">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="appsforartists" data-src="https://secure.gravatar.com/avatar/16a6e000de24f54c2ff869b2423b8c55?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">appsforartists</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/artcygn" title="View profile: artcygn">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="artcygn" data-src="https://secure.gravatar.com/avatar/b8144eb6cdf298e94270f23d247cdb74?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">artcygn</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/Sheppy" title="View profile: Sheppy">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="Sheppy" data-src="https://secure.gravatar.com/avatar/945076feb88f2d7003891ffbf06f32bf?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">Sheppy</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/mccary" title="View profile: mccary">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="mccary" data-src="https://secure.gravatar.com/avatar/022eedc03cc5947fae78d4861663503b?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">mccary</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/asharpe" title="View profile: asharpe">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="asharpe" data-src="https://secure.gravatar.com/avatar/2bba2fac7031d188f843362b09895bcc?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">asharpe</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/wjinca" title="View profile: wjinca">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="wjinca" data-src="https://secure.gravatar.com/avatar/bd25d0f417f25793440b26d0e71f8030?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">wjinca</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/Jeremie" title="View profile: Jeremie">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="Jeremie" data-src="https://secure.gravatar.com/avatar/ea74cf7f528273838138e9ae407cd8ef?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">Jeremie</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/trevorh" title="View profile: trevorh">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="trevorh" data-src="https://secure.gravatar.com/avatar/1638bc67341673005fa05e5def8f3c4d?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">trevorh</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/Ms2ger" title="View profile: Ms2ger">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="Ms2ger" data-src="https://secure.gravatar.com/avatar/42f6fa059df34a3d5c3e4091c50ebde7?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">Ms2ger</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/sorinelpusti" title="View profile: sorinelpusti">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="sorinelpusti" data-src="https://secure.gravatar.com/avatar/5bc498de592124e4dec6b629f3ab78a5?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">sorinelpusti</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/Mgjbot" title="View profile: Mgjbot">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="Mgjbot" data-src="https://secure.gravatar.com/avatar/cde356a1ca3e38301f29fda3dbd5de53?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">Mgjbot</noscript></a>
+                </li>
+            
+                <li class="hidden">
+                <a href="/en-US/profiles/PablO" title="View profile: PablO">
+                <noscript data-width="34" data-height="34" data-class="avatar" data-alt="PablO" data-src="https://secure.gravatar.com/avatar/b13a8d94bc8c56696836e896129c1583?s=34&amp;r=pg&amp;d=https%3A%2F%2Fdeveloper.cdn.mozilla.net%2Fmedia%2Fimg%2Favatar.png">PablO</noscript></a>
+                </li>
+            
+            </ul>
+        </div>
+        
+
+        <h1>Block-level elements</h1>
+
+      </div>
+      
+
+      <!-- start the main content container -->
+        <div id="wiki-column-container" class="wiki-right-present wiki-left-closed wiki-left-none">
+
+          <!-- content row with three strips -->
+          <div class="column-container column-container-reverse">
+
+            
+              <!-- TOC, approvals, etc -->
+              <div class="column-strip wiki-column" id="wiki-right">
+              
+              <!-- table of contents -->
+              <div id="toc" class="toc toggleable">
+                <a href="#toc" class="title toggler" data-open-icon="icon-caret-right" data-closed-icon="icon-caret-down">In This Article<i></i></a>
+                <ol class="toggle-container">
+                  <li><a href="#Block-level_Example" rel="internal">Block-level elements</a><ol><li><a href="#HTML" rel="internal">HTML</a><li><a href="#CSS" rel="internal">CSS</a></ol></li><li><a href="#Usage" rel="internal">Usage</a><li><a href="#Block-level_vs._inline" rel="internal">Block-level vs. inline</a><li><a href="#Elements" rel="internal">Elements</a><ol><li><a href="#See_also" rel="internal">See also</a></ol></li>
+                </ol>
+              </div>
+              
+              </div>
+            
+
+            
+            
+              
+            
+
+            <!-- center: main article content -->
+            <div id="wiki-content" class="column-main wiki-column text-content">
+
+              
+
+              
+
+              
+                
+                
+                
+              
+              
+
+              <!-- just the article content -->
+              <article id="wikiArticle">
+                
+                  
+                    <p><span class="seoSummary">HTML (<strong>Hypertext Markup Language</strong>) elements are usually either "block-level" elements or <a href="/en-US/docs/HTML/Inline_elements" title="/en-US/docs/HTML/inline_elements">"inline" elements</a>. A block-level element occupies the entire space of its parent element (container), thereby creating a "block." This article helps to explain what this means.</span></p>
+
+<p>Browsers typically display the block-level element with a newline both before and after the element. You can visualize them as a stack of boxes. The following example demonstrates the block-level element's influence:</p>
+
+<h2 name="Block-level_Example" id="Block-level_Example"><span style="color: #333333; margin-left: -3px; text-transform: none;">Block-level elements</span></h2>
+
+<h3 id="HTML">HTML</h3>
+
+<pre class="brush: html">&lt;p&gt;This paragraph is a block-level element; its background has been colored to display the paragraph's parent element.&lt;/p&gt;</pre>
+
+<h3 id="CSS">CSS</h3>
+
+<pre class="brush: css">p { background-color: #8ABB55; }
+</pre>
+
+<p><iframe frameborder="0" class="live-sample-frame sample-code-frame" id="frame_Block-level_Example" src="https://mdn.mozillademos.org/en-US/docs/Web/HTML/Block-level_elements$samples/Block-level_Example?revision=1174805"></iframe></p>
+
+<h2 id="Usage">Usage</h2>
+
+<ul>
+ <li>Block-level elements may appear only within a <a href="/en-US/docs/Web/HTML/Element/body" title="The HTML &lt;body> Element represents the content of an HTML document. There can be only one &lt;body> element in a document."><code>&lt;body&gt;</code></a> element.</li>
+</ul>
+
+<h2 id="Block-level_vs._inline">Block-level vs. inline</h2>
+
+<p>There are a couple of key differences between block-level elements and inline elements:</p>
+
+<dl>
+ <dt>Formatting</dt>
+ <dd>By default, block-level elements begin on new lines, but inline elements can start anywhere in a line.</dd>
+ <dt>Content model</dt>
+ <dd>Generally, block-level elements may contain inline elements and other block-level elements. Inherent in this structural distinction is the idea that block elements create "larger" structures than inline elements.</dd>
+</dl>
+
+<p>The distinction of block-level vs. inline elements is used in HTML specifications up  to 4.01. In HTML5, this binary distinction is replaced with a more complex set of <a href="/en-US/docs/HTML/Content_categories" title="/en-US/docs/HTML/Content_categories">content categories</a>. The "block-level" category roughly corresponds to the category of <a href="/en-US/docs/HTML/Content_categories#Flow_content" title="/en-US/docs/HTML/Content_categories#Flow_content">flow content</a> in HTML5, while "inline" corresponds to <a href="/en-US/docs/HTML/Content_categories#Phrasing_content" title="/en-US/docs/HTML/Content_categories#Phrasing_content">phrasing content</a>, but there are additional categories.</p>
+
+<h2 id="Elements">Elements</h2>
+
+<p>The following is a complete list of all HTML block level elements (although "block-level" is not technically defined for elements that are new in HTML5).</p>
+
+<div class="threecolumns">
+<dl>
+ <dt><a href="/en-US/docs/Web/HTML/Element/address" title="The HTML &lt;address> element supplies contact information for its nearest &lt;article> or &lt;body> ancestor; in the latter case, it applies to the whole document."><code>&lt;address&gt;</code></a></dt>
+ <dd>Contact information.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/article" title="The HTML &lt;article> element represents a self-contained composition in a document, page, application, or site, which is intended to be independently distributable or reusable (e.g., in syndication). Examples include: a forum post, a magazine or newspaper article, or a blog entry."><code>&lt;article&gt;</code></a> <span class="inlineIndicator htmlVer htmlVerInline"><a href="/en-US/docs/HTML/HTML5">HTML5</a></span></dt>
+ <dd>Article content.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/aside" title="The HTML &lt;aside> element represents a section of a document with content connected tangentially to the main content of the document (often presented as a sidebar)."><code>&lt;aside&gt;</code></a> <span class="inlineIndicator htmlVer htmlVerInline"><a href="/en-US/docs/HTML/HTML5">HTML5</a></span></dt>
+ <dd>Aside content.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/blockquote" title="The HTML &lt;blockquote> Element (or HTML Block Quotation Element) indicates that the enclosed text is an extended quotation. Usually, this is rendered visually by indentation (see Notes for how to change it). A URL for the source of the quotation may be given using the cite attribute, while a text representation of the source can be given using the &lt;cite> element."><code>&lt;blockquote&gt;</code></a></dt>
+ <dd>Long ("block") quotation.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/br" title="The HTML &lt;br> element produces a line break in text (carriage-return). It is useful for writing a poem or an address, where the division of lines is significant."><code>&lt;br&gt;</code></a></dt>
+ <dd>Break line.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/canvas" title="Use the HTML &lt;canvas> element with the canvas scripting API to draw graphics and animations."><code>&lt;canvas&gt;</code></a> <span class="inlineIndicator htmlVer htmlVerInline"><a href="/en-US/docs/HTML/HTML5">HTML5</a></span></dt>
+ <dd>Drawing canvas.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/dd" title="The HTML &lt;dd> element indicates the description of a term in a description list (&lt;dl>)."><code>&lt;dd&gt;</code></a></dt>
+ <dd>Definition description.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/div" title="The HTML &lt;div> element is the generic container for flow content and does not inherently represent anything. Use it to group elements for purposes such as styling (using the class or id attributes), marking a section of a document in a different language (using the lang attribute), and so on."><code>&lt;div&gt;</code></a></dt>
+ <dd>Document division.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/dl" title="The HTML &lt;dl> element encloses a list of groups of terms and descriptions. Common uses for this element are to implement a glossary or to display metadata (a list of key-value pairs)."><code>&lt;dl&gt;</code></a></dt>
+ <dd>Definition list.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/fieldset" title="The HTML &lt;fieldset> element is used to group several controls as well as labels (&lt;label>) within a web form."><code>&lt;fieldset&gt;</code></a></dt>
+ <dd>Field set label.</dd>
+</dl>
+
+<dl>
+ <dt><a href="/en-US/docs/Web/HTML/Element/figcaption" title="The HTML &lt;figcaption> element represents a caption or a legend associated with a figure or an illustration described by the rest of the data of the &lt;figure> element which is its immediate ancestor."><code>&lt;figcaption&gt;</code></a> <span class="inlineIndicator htmlVer htmlVerInline"><a href="/en-US/docs/HTML/HTML5">HTML5</a></span></dt>
+ <dd>Figure caption.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/figure" title="The HTML &lt;figure> element represents self-contained content, frequently with a caption (&lt;figcaption>), and is typically referenced as a single unit."><code>&lt;figure&gt;</code></a> <span class="inlineIndicator htmlVer htmlVerInline"><a href="/en-US/docs/HTML/HTML5">HTML5</a></span></dt>
+ <dd>Groups media content with a caption (see <a href="/en-US/docs/Web/HTML/Element/figcaption" title="The HTML &lt;figcaption> element represents a caption or a legend associated with a figure or an illustration described by the rest of the data of the &lt;figure> element which is its immediate ancestor."><code>&lt;figcaption&gt;</code></a>).</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/footer" title="The HTML &lt;footer> element represents a footer for its nearest sectioning content or sectioning root element. A footer typically contains information about the author of the section, copyright data or links to related documents."><code>&lt;footer&gt;</code></a> <span class="inlineIndicator htmlVer htmlVerInline"><a href="/en-US/docs/HTML/HTML5">HTML5</a></span></dt>
+ <dd>Section or page footer.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/form" title="The HTML &lt;form> element represents a document section that contains interactive controls to submit information to a web server."><code>&lt;form&gt;</code></a></dt>
+ <dd>Input form.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/h1" title="Heading elements implement six levels of document headings, &lt;h1> is the most important and &lt;h6> is the least. A heading element briefly describes the topic of the section it introduces. Heading information may be used by user agents, for example, to construct a table of contents for a document automatically."><code>&lt;h1&gt;</code></a>, <a href="/en-US/docs/Web/HTML/Element/h2" title="Heading elements implement six levels of document headings, &lt;h1> is the most important and &lt;h6> is the least. A heading element briefly describes the topic of the section it introduces. Heading information may be used by user agents, for example, to construct a table of contents for a document automatically."><code>&lt;h2&gt;</code></a>, <a href="/en-US/docs/Web/HTML/Element/h3" title="Heading elements implement six levels of document headings, &lt;h1> is the most important and &lt;h6> is the least. A heading element briefly describes the topic of the section it introduces. Heading information may be used by user agents, for example, to construct a table of contents for a document automatically."><code>&lt;h3&gt;</code></a>, <a href="/en-US/docs/Web/HTML/Element/h4" title="Heading elements implement six levels of document headings, &lt;h1> is the most important and &lt;h6> is the least. A heading element briefly describes the topic of the section it introduces. Heading information may be used by user agents, for example, to construct a table of contents for a document automatically."><code>&lt;h4&gt;</code></a>, <a href="/en-US/docs/Web/HTML/Element/h5" title="Heading elements implement six levels of document headings, &lt;h1> is the most important and &lt;h6> is the least. A heading element briefly describes the topic of the section it introduces. Heading information may be used by user agents, for example, to construct a table of contents for a document automatically."><code>&lt;h5&gt;</code></a>, <a href="/en-US/docs/Web/HTML/Element/h6" title="Heading elements implement six levels of document headings, &lt;h1> is the most important and &lt;h6> is the least. A heading element briefly describes the topic of the section it introduces. Heading information may be used by user agents, for example, to construct a table of contents for a document automatically."><code>&lt;h6&gt;</code></a></dt>
+ <dd>Heading levels 1-6.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/header" title="The HTML &lt;header> element represents a group of introductory or navigational aids. It may contain some heading elements but also other elements like a logo, a search form, and so on."><code>&lt;header&gt;</code></a> <span class="inlineIndicator htmlVer htmlVerInline"><a href="/en-US/docs/HTML/HTML5">HTML5</a></span></dt>
+ <dd>Section or page header.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/hgroup" title="The HTML &lt;hgroup> element represents the heading of a section. It defines a single title that participates in the outline of the document as the heading of the implicit or explicit section that it belongs to."><code>&lt;hgroup&gt;</code></a> <span class="inlineIndicator htmlVer htmlVerInline"><a href="/en-US/docs/HTML/HTML5">HTML5</a></span></dt>
+ <dd>Groups header information.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/hr" title="The HTML &lt;hr> element represents a thematic break between paragraph-level elements (for example, a change of scene in a story, or a shift of topic with a section). In previous versions of HTML, it represented a horizontal rule. It may still be displayed as a horizontal rule in visual browsers, but is now defined in semantic terms, rather than presentational terms."><code>&lt;hr&gt;</code></a></dt>
+ <dd>Horizontal rule (dividing line).</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/li" title="The HTML &lt;li> element is used to represent an item in a list. It must be contained in a parent element: an ordered list (&lt;ol>), an unordered list (&lt;ul>), or a menu (&lt;menu>). In menus and unordered lists, list items are usually displayed using bullet points. In ordered lists, they are usually displayed with an ascending counter on the left, such as a number or letter."><code>&lt;li&gt;</code></a></dt>
+ <dd>List item.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/main" title="The HTML &lt;main> element represents the main content of  the &lt;body> of a document or application. The main content area consists of content that is directly related to, or expands upon the central topic of a document or the central functionality of an application."><code>&lt;main&gt;</code></a></dt>
+ <dd>Contains the central content unique to this document.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/nav" title="The HTML &lt;nav> element represents a section of a page that links to other pages or to parts within the page: a section with navigation links."><code>&lt;nav&gt;</code></a></dt>
+ <dd>Contains navigation links.</dd>
+</dl>
+
+<dl>
+ <dt><a href="/en-US/docs/Web/HTML/Element/noscript" title="The HTML &lt;noscript> element defines a section of html to be inserted if a script type on the page is unsupported or if scripting is currently turned off in the browser."><code>&lt;noscript&gt;</code></a></dt>
+ <dd>Content to use if scripting is not supported or turned off.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/ol" title="The HTML &lt;ol> element represents an ordered list of items, typically rendered as a numbered list."><code>&lt;ol&gt;</code></a></dt>
+ <dd>Ordered list.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/output" title="The HTML &lt;output> element represents the result of a calculation or user action."><code>&lt;output&gt;</code></a> <span class="inlineIndicator htmlVer htmlVerInline"><a href="/en-US/docs/HTML/HTML5">HTML5</a></span></dt>
+ <dd>Form output.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/p" title="The HTML &lt;p> element represents a paragraph of text."><code>&lt;p&gt;</code></a></dt>
+ <dd>Paragraph.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/pre" title='The HTML &lt;pre> element represents preformatted text. Text within this element is typically displayed in a non-proportional ("monospace") font exactly as it is laid out in the file. Whitespace inside this element is displayed as typed.'><code>&lt;pre&gt;</code></a></dt>
+ <dd>Preformatted text.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/section" title="The HTML &lt;section> element represents a generic section of a document, i.e., a thematic grouping of content, typically with a heading."><code>&lt;section&gt;</code></a> <span class="inlineIndicator htmlVer htmlVerInline"><a href="/en-US/docs/HTML/HTML5">HTML5</a></span></dt>
+ <dd>Section of a web page.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/table" title="The HTML &lt;table> element represents tabular data —that is, information expressed via a two-dimensional data table."><code>&lt;table&gt;</code></a></dt>
+ <dd>Table.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/tfoot" title="The HTML &lt;tfoot> element defines a set of rows summarizing the columns of the table."><code>&lt;tfoot&gt;</code></a></dt>
+ <dd>Table footer.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/ul" title="The HTML &lt;ul> element represents an unordered list of items, typically rendered as a bulleted list."><code>&lt;ul&gt;</code></a></dt>
+ <dd>Unordered list.</dd>
+ <dt><a href="/en-US/docs/Web/HTML/Element/video" title="Use the HTML &lt;video> element to embed video content in a document."><code>&lt;video&gt;</code></a> <span class="inlineIndicator htmlVer htmlVerInline"><a href="/en-US/docs/HTML/HTML5">HTML5</a></span></dt>
+ <dd>Video player.</dd>
+</dl>
+</div>
+
+<h3 name="See_also" id="See_also">See also</h3>
+
+<ul>
+ <li><a href="/en-US/docs/Web/HTML/Inline_elements" title="en/HTML/Inline_elements">Inline elements</a></li>
+</ul>
+                  
+                
+
+              
+                <aside class="helpful-survey hidden" id="helpful-survey">
+                  <p>Was this article helpful?</p>
+
+                  <div class="helpful-survey-content">
+                    <div class="helpful-survey-buttons">
+                      <button type="button" class="helpful-survey-vote helpful-survey-yes">
+                        <span class="offscreen">Yes</span>
+                        <i class="icon-thumbs-o-up" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="helpful-survey-vote helpful-survey-no">
+                        <span class="offscreen">No</span>
+                        <i class="icon-thumbs-o-down" aria-hidden="true"></i>
+                      </button>
+                    </div>
+
+                    <div class="helpful-survey-thankyou">Thank you!</div>
+                  </div>
+                </aside>
+              
+              </article>
+
+              
+
+                <!-- contributors -->
+                <div class="wiki-block contributors">
+                  <h2 class="offscreen">Document Tags and Contributors</h2>
+                  
+                  
+  <div class="tag-attach-list contributors-sub">
+    <i aria-hidden="true" class="icon-tags icon-fw"></i>
+    <strong>Tags:</strong>&nbsp;
+    <ul class="tags tags-small">
+      
+        <li><a href="/en-US/docs/tag/Beginner" rel="nofollow, noindex">Beginner</a></li>
+      
+        <li><a href="/en-US/docs/tag/Development" rel="nofollow, noindex">Development</a></li>
+      
+        <li><a href="/en-US/docs/tag/Guide" rel="nofollow, noindex">Guide</a></li>
+      
+        <li><a href="/en-US/docs/tag/HTML" rel="nofollow, noindex">HTML</a></li>
+      
+        <li><a href="/en-US/docs/tag/HTML5" rel="nofollow, noindex">HTML5</a></li>
+      
+        <li><a href="/en-US/docs/tag/Web" rel="nofollow, noindex">Web</a></li>
+      
+    </ul>
+  </div>
+
+
+                  
+                    <div class="contributors-sub">
+                      <i aria-hidden="true" class="icon-group icon-fw"></i>&nbsp;<strong>Contributors to this page:</strong> 
+        <a href="/en-US/profiles/rudijuri">rudijuri</a>, 
+    
+        <a href="/en-US/profiles/SphinxKnight">SphinxKnight</a>, 
+    
+        <a href="/en-US/profiles/masonwu311">masonwu311</a>, 
+    
+        <a href="/en-US/profiles/ktajpuri">ktajpuri</a>, 
+    
+        <a href="/en-US/profiles/teoli">teoli</a>, 
+    
+        <a href="/en-US/profiles/rawrmonstar">rawrmonstar</a>, 
+    
+        <a href="/en-US/profiles/robhudson">robhudson</a>, 
+    
+        <a href="/en-US/profiles/jswisher">jswisher</a>, 
+    
+        <a href="/en-US/profiles/technoAri">technoAri</a>, 
+    
+        <a href="/en-US/profiles/vjdhama">vjdhama</a>, 
+    
+        <a href="/en-US/profiles/RylanH">RylanH</a>, 
+    
+        <a href="/en-US/profiles/rufusbuck77">rufusbuck77</a>, 
+    
+        <a href="/en-US/profiles/appsforartists">appsforartists</a>, 
+    
+        <a href="/en-US/profiles/artcygn">artcygn</a>, 
+    
+        <a href="/en-US/profiles/Sheppy">Sheppy</a>, 
+    
+        <a href="/en-US/profiles/mccary">mccary</a>, 
+    
+        <a href="/en-US/profiles/asharpe">asharpe</a>, 
+    
+        <a href="/en-US/profiles/wjinca">wjinca</a>, 
+    
+        <a href="/en-US/profiles/Jeremie">Jeremie</a>, 
+    
+        <a href="/en-US/profiles/trevorh">trevorh</a>, 
+    
+        <a href="/en-US/profiles/Ms2ger">Ms2ger</a>, 
+    
+        <a href="/en-US/profiles/sorinelpusti">sorinelpusti</a>, 
+    
+        <a href="/en-US/profiles/Mgjbot">Mgjbot</a>, 
+    
+        <a href="/en-US/profiles/PablO">PablO</a>
+    
+                    </div>
+                  
+
+                  
+                    <div class="contributors-sub">
+                      <i aria-hidden="true" class="icon-clock-o icon-fw"></i>&nbsp;<strong>Last updated by:</strong>
+                      <a href="/en-US/profiles/rudijuri">rudijuri</a>,
+                      <time datetime="2017-01-24T01:51:27.387797-08:00">Jan 24, 2017, 1:51:27 AM</time>
+                    </div>
+                  
+                </div>
+              
+
+              
+                  <div class="newsletter-box">
+                    <div class="newsletter">
+    <form id="newsletterForm" name="newsletter-form" class="nodisable" action="https://www.mozilla.org/en-US/newsletter/" method="post">
+        <h2 class="newsletter-teaser">Learn the best of web development</h2>
+        <p class="newsletter-description">Sign up for our newsletter:</p>
+        <input type="hidden" id="fmt" name="fmt" value="H">
+        <input type="hidden" id="newsletterNewslettersInput" name="newsletters" value="app-dev" />
+
+        <div id="newsletterErrors" class="newsletter-errors"></div>
+
+        <div id="newsletterEmail" class="form-group">
+            <label for="newsletterEmailInput" class="form-label offscreen">E-mail</label>
+            <input type="email" id="newsletterEmailInput" name="email" class="form-input newsletter-input-email" required placeholder="you@example.com" size="30">
+        </div>
+
+        <div id="newsletterPrivacy" class="form-group form-group-agree hidden">
+            <input type="checkbox" id="newsletterPrivacyInput" name="privacy" required>
+            <label for="newsletterPrivacyInput">
+            I'm okay with Mozilla handling my info as explained in this <a href="https://www.mozilla.org/privacy/">Privacy Policy</a>.
+            </label>
+        </div>
+        <div id="newsletterSubmit">
+            <button id="newsletter-submit" type="submit" class="button positive">Sign up now</button>
+        </div>
+        
+    </form>
+    <div id="newsletterThanks" class="newsletter-thanks hidden">
+        <h2>Thanks! Please check your inbox to confirm your subscription.</h2>
+        <p>If you haven’t previously confirmed a subscription to a Mozilla-related newsletter you may have to do so. Please check your inbox or your spam filter for an email from us.
+        </p>
+    </div>
+    <button id="newsletterHide" type="button" class="only-icon newsletter-hide hidden"><span>Hide Newsletter Sign-up</span><i aria-hidden="true" class="icon-times"></i></button>
+</div>
+                  </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div> <!-- ends "main-content" -->
+
+  <menu type="context" id="edit-history-menu">
+    <menuitem data-action="/en-US/docs/Web/HTML/Block-level_elements$edit" label="Edit page"></menuitem>
+    <menuitem data-action="/en-US/docs/Web/HTML/Block-level_elements$history" label="View page history"></menuitem>
+  </menu>
+
+  </div></main>
+
+  <!-- Footer -->
+  <footer id="main-footer"><div class="center">
+    <div class="column-container">
+      <div class="column-main">
+        
+        <div class="contentinfo">
+          <p>&copy; 2005-2017 Mozilla Developer Network and individual contributors.</p> <p>Content is available under <a href="/en-US/docs/MDN/About#Copyrights_and_licenses">these licenses</a>.</p>
+          <ul>
+            <li><a href="/docs/MDN/About">About MDN</a></li>
+            <li><a href="//www.mozilla.org/about/legal/terms/mozilla">Terms</a></li>
+            <li><a href="//www.mozilla.org/privacy/websites/">Privacy</a></li>
+            <li><a href="//www.mozilla.org/privacy/websites/#cookies">Cookies</a></li>
+            <li><a href="//github.com/mozilla/kuma">Contribute to the code</a></li>
+          </ul>
+        </div>
+        
+      </div>
+      <div class="column-strip">
+        
+          
+  
+    <form class="languages go" method="get" action="/en-US/docs/Web">
+      <label for="language">Other languages:</label>
+      <select id="language" class="wiki-l10n" name="next" dir="ltr">
+        <option title="English (US)" value="/en-US/docs/Web/HTML/Block-level_elements" selected>
+          English (US) (en-US)
+        </option>
+        
+          <option title="Bengali (Bangladesh)" value="/bn-BD/docs/Web/HTML/Block-level_elements">
+            বাংলা (বাংলাদেশ) (bn-BD)
+          </option>
+          <option title="Catalan" value="/ca/docs/Web/HTML/Block-level_elements">
+            Català (ca)
+          </option>
+          <option title="German" value="/de/docs/Web/HTML/Block-level_elemente">
+            Deutsch (de)
+          </option>
+          <option title="Spanish" value="/es/docs/Web/HTML/Block-level_elements">
+            Español (es)
+          </option>
+          <option title="French" value="/fr/docs/Web/HTML/%C3%89l%C3%A9ments_en_bloc">
+            Français (fr)
+          </option>
+          <option title="Japanese" value="/ja/docs/Web/HTML/Block-level_elements">
+            日本語 (ja)
+          </option>
+          <option title="Korean" value="/ko/docs/HTML/Block-level_elements">
+            한국어 (ko)
+          </option>
+          <option title="Polish" value="/pl/docs/Web/HTML/Elementy_blokowe">
+            Polski (pl)
+          </option>
+          <option title="Portuguese (Brazilian)" value="/pt-BR/docs/Web/HTML/Elementos_nlock-level">
+            Português (do Brasil) (pt-BR)
+          </option>
+          <option title="Russian" value="/ru/docs/Web/HTML/Block-level_elements">
+            Русский (ru)
+          </option>
+          <option title="Chinese (Simplified)" value="/zh-CN/docs/Web/HTML/Block-level_elements">
+            中文 (简体) (zh-CN)
+          </option>
+      </select>
+      <noscript><button type="submit">Go</button></noscript>
+    </form>
+  
+
+        
+      </div>
+    </div>
+  </div></footer>
+
+  <!-- site js -->
+  
+    
+    <!--[if lte IE 8]><script type="text/javascript" src="https://developer.cdn.mozilla.net/static/build/js/selectivizr.091e18cf669b.js" charset="utf-8"></script><![endif]-->
+
+    
+    <script type="text/javascript" src="https://developer.cdn.mozilla.net/static/build/js/main.660aa2a4bc00.js" charset="utf-8"></script>
+    
+      <script>
+        if(window.mdn && mdn.analytics) mdn.analytics.trackOutboundLinks();
+      </script>
+    
+    
+    <script type="text/javascript" src="https://developer.cdn.mozilla.net/static/jsi18n/en-us/javascript.b28203373cc1.js"></script>
+  
+    <script async type="text/javascript" src="https://developer.cdn.mozilla.net/static/build/js/wiki.7114338e4daa.js" charset="utf-8"></script>
+
+
+  
+
+  
+    <script type="text/javascript">
+        (function($) {
+            $('#wikiArticle').children('h2[id]').each(function() {
+                var id = $(this).attr('id');
+                var href = '/en-US/docs/Web/HTML/Block-level_elements$edit#' + id;
+
+                $('<a>').attr({
+                    href: href,
+                    'class': 'button section-edit only-icon',
+                    'rel': 'nofollow, noindex'
+                })
+                .append($('<i aria-hidden="true" class="icon-pencil"></i>'))
+                .append($('<span>'))
+                .find('span')
+                .text(gettext('Edit'))
+                .end()
+                .on('click', function(e) {
+                    e.preventDefault();
+
+                    mdn.analytics.trackEvent({
+                        category: 'Section Edit',
+                        action: id
+                    }, function() {
+                        window.location = href;
+                    });
+                })
+                .appendTo(this);
+            });
+        })(jQuery);
+    </script>
+  
+
+  
+
+  
+    <script async type="text/javascript" src="https://developer.cdn.mozilla.net/static/build/js/newsletter.7cd3274169f2.js" charset="utf-8"></script>
+  
+
+
+</body>
+</html>
+

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, division, print_function, absolute_import
-from urlparse import urlparse
 import logging
 import json
+import urllib
+import hashlib
 
 import requests
 
+from .compat.urllib import parse
 from . import parsers
 
 
@@ -32,19 +34,20 @@ class Base(object):
 
     def __init__(self, original_url, original_html=""):
         self.original_url = original_url
-        if original_html:
-            self.original_html = original_html
-        else:
-            self.original_html = self.fetch_html()
+        self.original_html = original_html
+#         if original_html:
+#             self.original_html = original_html
+#         else:
+#             self.original_html = self.fetch_html()
         self.simplify()
 
-    def fetch_html(self):
-        kwargs = {}
-        res = requests.get(self.original_url, **kwargs)
-        if res.status_code >= 400:
-            raise IOError("Problem fetching {}, code {}".format(self.original_url, res.status_code))
-
-        return res.content
+#     def fetch_html(self):
+#         kwargs = {}
+#         res = requests.get(self.original_url, **kwargs)
+#         if res.status_code >= 400:
+#             raise IOError("Problem fetching {}, code {}".format(self.original_url, res.status_code))
+# 
+#         return res.content
 
     def simplify(self):
         raise NotImplementedError()
@@ -53,40 +56,101 @@ class Base(object):
 class Article(Base):
 
     @property
-    def parsers(self):
-        ps = []
-        if self.original_url:
-            o = urlparse(self.original_url)
-            host = o.hostname
-            bits = host.split(".")
-            class_name = "".join((b.lower().title() for b in bits))
-            klass = getattr(parsers, class_name, None)
-            if klass:
-                ps.append(klass)
-
-        ps.append(parsers.Article)
-        ps.append(parsers.MicroData)
-        ps.append(parsers.Generic)
-        return ps
+    def parser(self):
+        return parsers.Mercury
+#         ps = []
+#         if self.original_url:
+#             o = parse.urlparse(self.original_url)
+#             host = o.hostname
+#             bits = host.split(".")
+#             class_name = "".join((b.lower().title() for b in bits))
+#             klass = getattr(parsers, class_name, None)
+#             if klass:
+#                 ps.append(klass)
+# 
+#         ps.append(parsers.Article)
+#         ps.append(parsers.MicroData)
+#         ps.append(parsers.Generic)
+#         return ps
 
     def simplify(self):
-        parsers = self.parsers
-        for parser in parsers:
-            p = parser(self.original_url, self.original_html)
-            plain_html = p.parse()
-            if plain_html:
-                logger.debug("plain html from {}".format(parser))
-                self.plain_html = plain_html
-                break
+        parser = self.parser
+        p = parser(self.original_url)
+        self.fields = p.parse()
+
+    def __getattr__(self, key):
+        return self.fields[key]
 
 
 class Table(Base):
     def simplify(self):
-        p = parsers.Table(self.original_url, self.original_html)
+        p = parsers.Table(self.original_url)
         self.data = p.parse()
 
     def pretty(self):
         # https://coderwall.com/p/gmxnqg/pretty-printing-a-python-dictionary
         return json.dumps(self.data, sort_keys=True, indent=4)
 
+
+class Url(str):
+    """Take a url and strip any gunk from it"""
+
+    @classmethod
+    def parse_query(cls, query):
+        if not query: return {}
+
+        d = {}
+        for k, kv in parse.parse_qs(query, True, strict_parsing=True).items():
+            if len(kv) > 1:
+                d[k] = kv
+            else:
+                d[k] = kv[0]
+
+        return d
+
+    @classmethod
+    def unparse_query(cls, query_kwargs):
+        if not query_kwargs: return ""
+        return urllib.urlencode(query_kwargs, doseq=True)
+
+    @classmethod
+    def simplify(cls, original_url):
+        data = {
+            "original_url": original_url,
+        }
+
+        o = parse.urlparse(original_url)
+
+        query_kwargs = {}
+        query = o.query
+        if query:
+            query_kwargs = cls.parse_query(query)
+            query_kwargs = {k: v for k, v in query_kwargs.items() if not k.startswith("utm_")}
+
+        #query = cls.unparse_query(query_kwargs) if query_kwargs else ""
+        data["query_kwargs"] = query_kwargs
+        data["scheme"] = o.scheme
+        data["netloc"] = o.netloc
+        data["path"] = o.path
+
+        data["plain_url"] = parse.urlunsplit((
+            data["scheme"],
+            data["netloc"],
+            data["path"],
+            cls.unparse_query(data["query_kwargs"]),
+            ""
+        ))
+        return data
+
+    def __new__(cls, original_url):
+        data = cls.simplify(original_url)
+
+        instance = super(Url, cls).__new__(cls, data.pop("plain_url"))
+        for k, v in data.items():
+            setattr(instance, k, v)
+        return instance
+
+    def hash(self):
+        """return an md5 hash of the url"""
+        return hashlib.md5(self).hexdigest()
 

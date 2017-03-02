@@ -10,7 +10,7 @@ import json
 
 import testdata
 
-from plain import Article, Table
+from plain import Article, Table, Url
 from plain.parsers import Mercury
 
 
@@ -69,25 +69,30 @@ class MercuryParserTest(TestCase):
     def test_fetch_bloomberg(self):
         m = self.get_patched("bloomberg.com")
         m.fetch()
+        pout.v(m)
 
     def test_fetch_bi(self):
         m = self.get_patched("businessinsider.com")
         m.fetch()
+        pout.v(m)
 
     def test_fetch_newyorker(self):
         filename = "newyorker.com"
         m = self.get_patched(filename)
         m.fetch()
+        pout.v(m)
 
     def test_fetch_medium(self):
         filename = "signalvnoise.com"
         m = self.get_patched(filename)
         m.fetch()
+        pout.v(m)
 
     def test_fetch_bespoke(self):
         filename = "twistedmatrix.com"
         m = self.get_patched(filename)
         m.fetch()
+        pout.v(m)
 
     def test_fetch_multipage(self):
         filename = "uproxx.com"
@@ -153,3 +158,18 @@ class MercuryParserTest(TestCase):
 #         t.data = r
 #         print(t.pretty())
 # 
+
+class UrlTest(TestCase):
+    def test_utm(self):
+        original_url = "https://example.com/path/?utm_source=source&utm_campaign=campaign-source&utm_medium=medium&utm_term=blah-blah-blah"
+        plain_url = Url(original_url)
+        self.assertEqual("https://example.com/path/", plain_url)
+
+        original_url = "https://example.com/path/?utm_source=source&foo=bar"
+        plain_url = Url(original_url)
+        self.assertEqual("https://example.com/path/?foo=bar", plain_url)
+
+        original_url = "https://example.com/path/#anchor"
+        plain_url = Url(original_url)
+        self.assertEqual("https://example.com/path/", plain_url)
+
