@@ -10,9 +10,12 @@ from plain import Table
 @arg("url", help="the url of the html table you want")
 #@arg("--csv", action="store_true", help="")
 @arg("--json", action="store_true", help="print table data to the screen as json")
+# TODO -- add --format that can take "json" or "csv" and defaults to "json"
 def main_table(url, json):
 
     t = Table(url)
+    t.parse()
+    print(t.json())
 
 
 

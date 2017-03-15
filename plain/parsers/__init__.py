@@ -31,7 +31,15 @@ class Attributes(object):
 
 
 class Base(object):
-    def __init__(self, url, body=""):
+    @property
+    def soup(self):
+        # https://www.crummy.com/software/BeautifulSoup/
+        # docs: https://www.crummy.com/software/BeautifulSoup/bs4/doc/
+        # bs4 codebase: http://bazaar.launchpad.net/~leonardr/beautifulsoup/bs4/files
+        soup = BeautifulSoup(self.body, "html.parser")
+        return soup
+
+    def __init__(self, url, body=None):
         self.url = url
         self.body = body
 
@@ -41,11 +49,11 @@ class Base(object):
 
         :returns: a dict of values pulled from the url including "content" key
         """
-        if not self.body:
+        if self.body is None:
             res = self.fetch()
             self.body = self._parse(res)
 
-        self.simplify(self.body)
+        self.simplify()
 
         return self.fields
 
@@ -54,6 +62,11 @@ class Base(object):
         return response.content
 
     def fetch(self):
+        """If you don't pass body into the init method then you will need to go and
+        get it, that's what this method does
+
+        :returns: requests.Response
+        """
         res = self._fetch()
         if res.status_code >= 400:
             raise IOError("Problem fetching {}, code {}".format(self.url, res.status_code))
@@ -63,17 +76,13 @@ class Base(object):
     def _fetch(self):
         return requests.get(self.url)
 
-    def simplify(self, body):
-        """simplify what was returned from requests
+    def simplify(self):
+        """simplify what was returned from requests"""
+        self.fields = self._simplify()
 
-        :param response: a requests response object
-        """
-        self.fields = self._simplify(body)
-
-    def _simplify(self, body):
+    def _simplify(self):
         """handle converting the requests response to a nice dictionary
 
-        :param body: the body to be simplified, self.body passed in for convenience
         :returns: whatever you want in self.fields
         """
         raise NotImplementedError()
@@ -82,33 +91,66 @@ class Base(object):
         """returns this instance as a nicely formatted json string"""
         return json.dumps(self.fields, sort_keys=True, indent=4)
 
+
+"""
+order of operations of parsers:
+
+    1 - plugin of the hostname, so arstechnica.com would first search for ArstechnicaCom
+    2 - Article plugin that will search for an article tag
+    3 - generic that will parse based on found plain text outside of tags
+    4 - if all else fails, fallback to third party parser?
+
+Also, on the url, should I strip the #anchor and utm_* params? I say yes, I would need to
+compensate for #! hashbanging though if that is still a thing (I might be showing my age)
+
+Whichever one is chosen, the html should be stripped of class, id, and style attributes
+"""
+
+
 class Article(Base):
+
+# code to choose a parser based on url
+#         ps = []
+#         if self.original_url:
+#             o = parse.urlparse(self.original_url)
+#             host = o.hostname
+#             bits = host.split(".")
+#             class_name = "".join((b.lower().title() for b in bits))
+#             klass = getattr(parsers, class_name, None)
+#             if klass:
+#                 ps.append(klass)
+# 
+#         ps.append(parsers.Article)
+#         ps.append(parsers.MicroData)
+#         ps.append(parsers.Generic)
+#         return ps
+
     @property
     def soup(self):
         # https://www.crummy.com/software/BeautifulSoup/
         # docs: https://www.crummy.com/software/BeautifulSoup/bs4/doc/
         # bs4 codebase: http://bazaar.launchpad.net/~leonardr/beautifulsoup/bs4/files
-        soup = BeautifulSoup(self.fields["content"], "html.parser")
+        soup = BeautifulSoup(self.body["content"], "html.parser")
         return soup
 
-    def simplify(self, response):
+    def _simplify(self):
         """simplify what was returned from requests
 
         :param response: a requests response object
         """
-        self.fields = self._simplify(response)
-
         soup = self.soup
         self.simplify_document(soup)
         self.simplify_tags(soup)
         self.simplify_attrs(soup)
         #self.fields["content"] = soup.prettify(formatter=self.simplify_strings)
-        self.fields["content"] = soup.prettify(formatter=None)
+
+        fields = {key: self.body[key] for key in self.body if key != "content"}
+        fields["content"] = soup.prettify(formatter=None)
+        return fields
 
 #     def simplify_strings(self, s):
 #         pout.v(s)
 #         return s
-
 
     def simplify_document(self, element):
         """simplify the structure of the document, by default this just gets rid of
@@ -239,20 +281,48 @@ class Mercury(Article):
 
 
 class Table(Base):
-    def parse(self):
+    def _simplify(self):
         # http://stackoverflow.com/questions/11790535/extracting-data-from-html-table
-        datasets = []
+        datasets = {"tables": [], "dls": []}
         soup = self.soup
-        # TODO -- make this go through all tables in html
-        table = soup.find("table")
-
-        # The first tr contains the field names.
-        headings = [th.get_text() for th in table.find("tr").find_all("th")]
-
-        for row in table.find_all("tr")[1:]:
-            dataset = zip(headings, (td.get_text() for td in row.find_all("td")))
-            d = {v[0]: v[1] for v in dataset}
-            datasets.append(d)
-
+        datasets["tables"] = self.find_tables(soup)
+        datasets["dls"] = self.find_dls(soup)
         return datasets
+
+    def find_tables(self, soup):
+        ret = []
+        for table in soup.find_all("table"):
+            rows = []
+
+            # The first tr contains the field names.
+            headings = [th.get_text() for th in table.find("tr").find_all("th")]
+
+            for row in table.find_all("tr")[1:]:
+                colums = zip(headings, (td.get_text() for td in row.find_all("td")))
+                d = {v[0]: v[1] for v in colums}
+                rows.append(d)
+            ret.append(rows)
+
+        return ret
+
+    def find_dls(self, soup):
+        ret = []
+        for dl in soup.find_all("dl"):
+            rows = []
+            terms = []
+            #pout.v(list(dl.descendants))
+            for el in dl.descendants:
+                if el.name == "dt":
+                    terms.append(el.get_text(strip=True))
+
+                elif el.name == "dd":
+                    rows.append({
+                        "terms": terms,
+                        "definition": el.get_text(strip=True)
+                    })
+                    terms = []
+
+            ret.append(rows)
+
+        return ret
 

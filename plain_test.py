@@ -27,7 +27,7 @@ logger.addHandler(log_handler)
 class TestCase(BaseTestCase):
     def get_html(self, filename):
         basepath = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
-        path = os.path.join(basepath, "testdata", "{}.html".format(filename))
+        path = os.path.join(basepath, "testdata", "html", "{}.html".format(filename))
         with codecs.open(path, encoding='utf-8', mode='r') as f:
             html = f.read()
         return html
@@ -138,7 +138,56 @@ class MercuryParserTest(TestCase):
 #         pout.v(path)
 
 
-# class TableTest(TestCase):
+class TableTest(TestCase):
+    def test_dl(self):
+        url = testdata.get_url()
+
+
+        html = "\n".join([
+            "<dl>",
+            "  <dt>term1</dt>",
+            "  <dd>definition 1</dd>",
+            "  <dt>term2</dt>",
+            "  <dd>definition 2</dd>",
+            "</dl>",
+            "<dl>",
+            "  <dt>term3</dt>",
+            "  <dd>definition 3</dd>",
+            "  <dt>term4</dt>",
+            "  <dd>definition 4</dd>",
+            "</dl>",
+        ])
+        t = Table(url, html)
+        t.parse()
+        self.assertEqual(2, len(t.fields["dls"]))
+        self.assertEqual(2, len(t.fields["dls"][0]))
+        self.assertEqual(2, len(t.fields["dls"][1]))
+
+        html = "\n".join([
+            "<dl>",
+            "  <dt>term1</dt>",
+            "  <dt>term2</dt>",
+            "  <dd>definition 1</dd>",
+            "  <dt>term3</dt>",
+            "  <dd>definition 2</dd>",
+            "</dl>",
+        ])
+
+        t = Table(url, html)
+        t.parse()
+        self.assertEqual(1, len(t.fields["dls"]))
+        self.assertEqual(2, len(t.fields["dls"][0]))
+
+    def test_dl_full(self):
+        url = "https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements"
+        html = self.get_html("tables")
+
+        t = Table(url, html)
+        t.parse()
+        self.assertEqual(4, len(t.fields["dls"]))
+        print(t.json())
+
+
 #     def test_table(self):
 #         """This is really here to generate the table, not so much to actually test anything"""
 #         html = self.get_html("attributes")
