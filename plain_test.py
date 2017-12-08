@@ -8,6 +8,7 @@ import logging
 import sys
 import json
 
+from bs4 import BeautifulSoup
 import testdata
 
 from plain import Article, Table, Url
@@ -15,13 +16,13 @@ from plain.parsers import Mercury
 
 
 # configure root logger
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-log_handler = logging.StreamHandler(stream=sys.stderr)
-log_formatter = logging.Formatter('[%(levelname).1s] %(message)s')
-log_handler.setFormatter(log_formatter)
-logger.addHandler(log_handler)
-
+testdata.basic_logging()
+# logger = logging.getLogger()
+# logger.setLevel(logging.DEBUG)
+# log_handler = logging.StreamHandler(stream=sys.stderr)
+# log_formatter = logging.Formatter('[%(levelname).1s] %(message)s')
+# log_handler.setFormatter(log_formatter)
+# logger.addHandler(log_handler)
 
 
 class TestCase(BaseTestCase):
@@ -39,6 +40,11 @@ class TestCase(BaseTestCase):
         with codecs.open(path, encoding='utf-8', mode='r') as f:
             body = json.load(f)
         return body
+
+    def get_soup(self, filename):
+        html = self.get_html(filename)
+        soup = BeautifulSoup(self.body, "html.parser")
+        return soup
 
 
 class MercuryParserTest(TestCase):
@@ -139,6 +145,117 @@ class MercuryParserTest(TestCase):
 
 
 class TableTest(TestCase):
+    def test_dimensions(self):
+        html = self.get_html("tables4")
+        t = Table(testdata.get_url(), html)
+
+        tables = t.soup.find_all("table")
+
+        cols, rows = t.find_dimensions(tables[2])
+        self.assertEqual((4, 3), (cols, rows))
+
+        cols, rows = t.find_dimensions(tables[3])
+        self.assertEqual((3, 2), (cols, rows))
+
+        cols, rows = t.find_dimensions(tables[1])
+        self.assertEqual((2, 1), (cols, rows))
+
+        cols, rows = t.find_dimensions(tables[5])
+        self.assertEqual((6, 2), (cols, rows))
+
+
+        html = self.get_html("tables3")
+        t = Table(testdata.get_url(), html)
+        cols, rows = t.find_dimensions(t.soup.find_all("table")[1])
+        self.assertEqual((3, 55), (cols, rows))
+
+    def test_headers(self):
+        html = self.get_html("tables4")
+        t = Table(testdata.get_url(), html)
+
+        tables = t.soup.find_all("table")
+        tests = [
+            ["First name", "Last name"],
+            ["Header content 1", "Header content 2"],
+            ["Countries", "Capitals", "Population", "Language"],
+            ["Lime", "Lemon", "Orange"],
+            ["1"],
+            ["1", "2", "3", "4", "5", "6"],
+        ]
+
+        for i, r in enumerate(tests):
+            headers = t.find_headers(tables[i])
+            self.assertEqual(r, headers)
+
+        html = self.get_html("tables3")
+        t = Table(testdata.get_url(), html)
+        headers = t.find_headers(t.soup.find_all("table")[1])
+        r = ["HTML name", "R \u00a0 G \u00a0 B Hex", "R \u00a0 G \u00a0 B Decimal"]
+        self.assertEqual(r, headers)
+
+    def test_content(self):
+        html = self.get_html("tables4")
+        t = Table(testdata.get_url(), html)
+        tables = t.soup.find_all("table")
+        tests = {
+            0: [
+                {
+                    'Last name': "Doe",
+                    'First name': "John"
+                },
+                {
+                    'Last name': "Doe",
+                    'First name': "Jane"
+                }
+            ],
+            1: [
+                {
+                    'Header content 1': "Body content 1",
+                    'Header content 2': "Body content 2"
+                },
+                {
+                    'Header content 1': "Footer content 1",
+                    'Header content 2': "Footer content 2"
+                }
+            ],
+            6: [
+                {
+                    'header 2': "Content 1.2",
+                    'header 1': "Content 1.1"
+                },
+                {
+                    'header 2': "Content 2.2",
+                    'header 1': "Content 2.1"
+                }
+            ]
+        }
+
+        for i, r in tests.items():
+            ret = t.find_table(tables[i])
+            self.assertEqual(r, ret)
+
+#         html = self.get_html("tables3")
+#         t = Table(testdata.get_url(), html)
+#         ret = t.find_content(t.soup.find_all("table")[1])
+#         pout.v(ret)
+
+
+    def test_tables2(self):
+        url = "https://en.wikipedia.org/wiki/Web_colors"
+        html = self.get_html("tables2")
+        t = Table(url, html)
+        tables = t.soup.find_all("table")
+        for table in tables:
+            pout.v(table.prettify())
+            pout.v(t.find_table(table))
+            pout.b(5)
+
+    def test_tables3(self):
+        url = "https://en.wikipedia.org/wiki/Web_colors"
+        html = self.get_html("tables3")
+        t = Table(url, html)
+        t.parse()
+
     def test_dl(self):
         url = testdata.get_url()
 
