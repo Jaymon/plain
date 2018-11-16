@@ -9,7 +9,7 @@ from codecs import open
 
 
 name = "plain"
-with open(os.path.join(name, "__init__.py", encoding="utf-8")) as f:
+with open(os.path.join(name, "__init__.py"), encoding="utf-8") as f:
     version = re.search(r"^__version__\s*=\s*[\'\"]([^\'\"]+)", f.read(), flags=re.I | re.M).group(1)
 
 long_description = ""
