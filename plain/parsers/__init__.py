@@ -2,7 +2,6 @@
 from __future__ import unicode_literals, division, print_function, absolute_import
 import re
 from collections import defaultdict
-from urlparse import urlparse
 import os
 import json
 
