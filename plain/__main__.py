@@ -22,5 +22,5 @@ def main_table(url):
 
 
 if __name__ == "__main__":
-    captain.exit()
+    captain.exit(__name__)
 
