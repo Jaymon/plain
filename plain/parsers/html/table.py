@@ -64,13 +64,6 @@ class Table(Base):
     def is_header_row(self, tr, headers):
         ret = False
 
-#         ths = tr.find_all("th", recursive=False)
-#         tds = tr.find_all("td", recursive=False)
-#         if ths and not tds:
-#             ret = True
-# 
-#         if not ret:
-
         all_scope_col = True
         has_th = False
         has_td = False
@@ -98,23 +91,7 @@ class Table(Base):
 
 
 
-#             ret = all_scope_col and has_th
-#             if ret:
-#                 # if we already have keys, then assume this is a content row if it
-#                 # fails any of the above
-#                 ret = len(headers.keys) == 0
-# 
-#         if not ret:
-#             # if we already have keys, then assume this is a content row if it
-#             # fails any of the above
-#             ret = len(headers.keys) == 0
-
         return ret
-
-#         ths = tr.find_all("th", recursive=False)
-#         tds = tr.find_all("td", recursive=False)
-# #         if ths and not tds:
-
 
     def find_dimensions(self, table):
         """Return the col, row of the table
@@ -192,13 +169,6 @@ class Table(Base):
                 for tr in c.find_all("tr", recursive=False):
                     self.find_headers(tr, headers)
 
-#             elif c.name == "tbody":
-#                 d["rows"] = self.find_rows(c, headers)
-
-
-#         rows = self.find_rows(table, headers)
-#         for row in rows:
-
         d["rows"] = self.find_content(table, headers)
         return d
 
@@ -225,7 +195,14 @@ class Table(Base):
                 else:
                     row = []
                     for col in tr.find_all(["td", "th"], recursive=False):
-                        row.append(col.get_text())
+                        text = col.get_text().strip()
+                        if not text:
+                            img_urls = []
+                            for img in col.find_all("img"):
+                                img_urls.append(img.get("src"))
+                            text = "\n".join(img_urls)
+
+                        row.append(text)
                         colspan = int(col.get("colspan", 1))
                         if colspan > 1:
                             row.extend([None] * colspan)
@@ -290,14 +267,6 @@ class Table(Base):
                 offset += span
 
         return headers
-
-
-
-
-
-
-
-
 
     def find_tables(self, soup):
         ret = []

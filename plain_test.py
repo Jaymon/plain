@@ -450,6 +450,19 @@ class TableTest(TestCase):
         }
         self.assertEqual(result, t.tables[0]["rows"][0])
 
+    def test_image_col(self):
+        html = [
+            "<table>",
+            "    <tr>",
+            "        <td><img src=\"https://foo.com/image.jpg\" /></td>",
+            "        <td>Column 2</td>",
+            "    </tr>",
+            "</table>",
+        ]
+        t = Table(testdata.get_url(), "\n".join(html))
+        t.parse()
+        self.assertEqual("https://foo.com/image.jpg", t.tables[0]["rows"][0]["0"]["value"])
+
 
 class UrlTest(TestCase):
     def test_utm(self):
