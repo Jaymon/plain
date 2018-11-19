@@ -12,7 +12,8 @@ from bs4 import BeautifulSoup
 import testdata
 
 from plain import Article, Table, Url
-from plain.parsers import Mercury
+from plain.parsers.html.article import Mercury
+#from plain.parsers.html.table import Headers
 
 
 # configure root logger
@@ -169,30 +170,6 @@ class TableTest(TestCase):
         cols, rows = t.find_dimensions(t.soup.find_all("table")[1])
         self.assertEqual((3, 55), (cols, rows))
 
-    def test_headers(self):
-        html = self.get_html("tables4")
-        t = Table(testdata.get_url(), html)
-
-        tables = t.soup.find_all("table")
-        tests = [
-            ["First name", "Last name"],
-            ["Header content 1", "Header content 2"],
-            ["Countries", "Capitals", "Population", "Language"],
-            ["Lime", "Lemon", "Orange"],
-            ["1"],
-            ["1", "2", "3", "4", "5", "6"],
-        ]
-
-        for i, r in enumerate(tests):
-            headers = t.find_headers(tables[i])
-            self.assertEqual(r, headers)
-
-        html = self.get_html("tables3")
-        t = Table(testdata.get_url(), html)
-        headers = t.find_headers(t.soup.find_all("table")[1])
-        r = ["HTML name", "R \u00a0 G \u00a0 B Hex", "R \u00a0 G \u00a0 B Decimal"]
-        self.assertEqual(r, headers)
-
     def test_content(self):
         html = self.get_html("tables4")
         t = Table(testdata.get_url(), html)
@@ -200,39 +177,75 @@ class TableTest(TestCase):
         tests = {
             0: [
                 {
-                    'Last name': "Doe",
-                    'First name': "John"
+                    'Last name': {
+                        "headers": [],
+                        "value": "Doe",
+                    },
+                    'First name':  {
+                        "headers": [],
+                        "value": "John"
+                    }
                 },
                 {
-                    'Last name': "Doe",
-                    'First name': "Jane"
+                    'Last name': {
+                        "headers": [],
+                        "value":  "Doe",
+                    },
+                    'First name':  {
+                        "headers": [],
+                        "value": "Jane"
+                    }
                 }
             ],
             1: [
                 {
-                    'Header content 1': "Body content 1",
-                    'Header content 2': "Body content 2"
+                    'Header content 1': {
+                        "headers": [],
+                        "value": "Body content 1",
+                    },
+                    'Header content 2': {
+                        "headers": [],
+                        "value": "Body content 2"
+                    },
                 },
                 {
-                    'Header content 1': "Footer content 1",
-                    'Header content 2': "Footer content 2"
+                    'Header content 1': {
+                        "headers": [],
+                        "value": "Footer content 1",
+                    },
+                    'Header content 2': {
+                        "headers": [],
+                        "value": "Footer content 2"
+                    },
                 }
             ],
             6: [
                 {
-                    'header 2': "Content 1.2",
-                    'header 1': "Content 1.1"
+                    'header 2': {
+                        "headers": [],
+                        "value": "Content 1.2",
+                    },
+                    'header 1': {
+                        "headers": [],
+                        "value": "Content 1.1"
+                    },
                 },
                 {
-                    'header 2': "Content 2.2",
-                    'header 1': "Content 2.1"
+                    'header 2': {
+                        "headers": [],
+                        "value": "Content 2.2",
+                    },
+                    'header 1': {
+                        "headers": [],
+                        "value": "Content 2.1"
+                    },
                 }
             ]
         }
 
         for i, r in tests.items():
             ret = t.find_table(tables[i])
-            self.assertEqual(r, ret)
+            self.assertEqual(r, ret["rows"])
 
 #         html = self.get_html("tables3")
 #         t = Table(testdata.get_url(), html)
@@ -240,21 +253,21 @@ class TableTest(TestCase):
 #         pout.v(ret)
 
 
-    def test_tables2(self):
-        url = "https://en.wikipedia.org/wiki/Web_colors"
-        html = self.get_html("tables2")
-        t = Table(url, html)
-        tables = t.soup.find_all("table")
-        for table in tables:
-            pout.v(table.prettify())
-            pout.v(t.find_table(table))
-            pout.b(5)
+#     def test_tables2(self):
+#         url = "https://en.wikipedia.org/wiki/Web_colors"
+#         html = self.get_html("tables2")
+#         t = Table(url, html)
+#         tables = t.soup.find_all("table")
+#         for table in tables:
+#             pout.v(table.prettify())
+#             pout.v(t.find_table(table))
+#             pout.b(5)
 
-    def test_tables3(self):
-        url = "https://en.wikipedia.org/wiki/Web_colors"
-        html = self.get_html("tables3")
-        t = Table(url, html)
-        t.parse()
+#     def test_tables3(self):
+#         url = "https://en.wikipedia.org/wiki/Web_colors"
+#         html = self.get_html("tables3")
+#         t = Table(url, html)
+#         t.parse()
 
     def test_dl(self):
         url = testdata.get_url()
@@ -302,7 +315,6 @@ class TableTest(TestCase):
         t = Table(url, html)
         t.parse()
         self.assertEqual(4, len(t.fields["dls"]))
-        print(t.json())
 
 
 #     def test_table(self):
@@ -324,6 +336,120 @@ class TableTest(TestCase):
 #         t.data = r
 #         print(t.pretty())
 # 
+
+    def test_tables6(self):
+        html = self.get_html("tables6")
+        t = Table(testdata.get_url(), html)
+        t.parse()
+
+        self.assertEqual(5, len(t.fields["tables"][0]["rows"]))
+
+        for row in t.fields["tables"][0]["rows"]:
+            self.assertEqual(4, len(row))
+
+        for v in ["1 header", "1 subheader"]:
+            for row in t.fields["tables"][0]["rows"][0].values():
+                self.assertTrue(v in row["headers"])
+
+        for v in ["2 header", "2 subheader"]:
+            for row in t.fields["tables"][0]["rows"][1].values():
+                self.assertTrue(v in row["headers"])
+
+        for v in ["2 header", "3 subheader"]:
+            for row in t.fields["tables"][0]["rows"][2].values():
+                self.assertTrue(v in row["headers"])
+
+        for v in ["4 header", "4 subheader"]:
+            for row in t.fields["tables"][0]["rows"][3].values():
+                self.assertTrue(v in row["headers"])
+
+    def test_row_th(self):
+        """This was one of the test tables in the docs, it has a td in the header
+        row and a th in the content row, the parser needs to handle these cases
+
+        this was my original note:
+            we need to make sure it can parse a table that has a th and td in the same tr
+        """
+        html = [
+            '<table>',
+            '    <tr>',
+            '        <td> </td>',
+            '        <th scope="col">Batman</th>',
+            '        <th scope="col">Robin</th>',
+            '        <th scope="col">The Flash</th>',
+            '        <th scope="col">Kid Flash</th>',
+            '    </tr>',
+            '    <tr>',
+            '        <th scope="row">Skill</th>',
+            '        <td>Smarts</td>',
+            '        <td>Dex, acrobat</td>',
+            '        <td>Super speed</td>',
+            '        <td>Super speed</td>',
+            '    </tr>',
+            '</table>',
+        ]
+        t = Table(testdata.get_url(), "\n".join(html))
+        t.parse()
+
+        result = {
+            '0': {
+                "headers": [],
+                "value": "Skill",
+            },
+            'Batman':  {
+                "headers": [],
+                "value": "Smarts"
+            },
+            'Robin': {
+                "headers": [],
+                "value":  "Dex, acrobat",
+            },
+            'The Flash':  {
+                "headers": [],
+                "value": "Super speed"
+            },
+            'Kid Flash':  {
+                "headers": [],
+                "value": "Super speed"
+            }
+        }
+        self.assertEqual(result, t.tables[0]["rows"][0])
+
+
+    def test_no_headers(self):
+        html = [
+            "<table>",
+            "    <tr>",
+            "        <td>Column 1</td>",
+            "        <td>Column 2</td>",
+            "        <td>Column 3</td>",
+            "        <td>Column 4</td>",
+            "    </tr>",
+            "</table>",
+        ]
+        t = Table(testdata.get_url(), "\n".join(html))
+        t.parse()
+
+        result = {
+            '0': {
+                "headers": [],
+                "value": "Column 1",
+            },
+            '1': {
+                "headers": [],
+                "value": "Column 2",
+            },
+            '2': {
+                "headers": [],
+                "value": "Column 3",
+            },
+            '3': {
+                "headers": [],
+                "value": "Column 4",
+            },
+        }
+        self.assertEqual(result, t.tables[0]["rows"][0])
+
 
 class UrlTest(TestCase):
     def test_utm(self):

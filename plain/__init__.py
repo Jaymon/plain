@@ -8,7 +8,10 @@ import hashlib
 import requests
 
 from .compat.urllib import parse
-from . import parsers
+from .parsers.html import (
+    Table,
+    Article as BaseArticle
+)
 
 
 logger = logging.getLogger(__name__)
@@ -17,15 +20,9 @@ logger = logging.getLogger(__name__)
 __version__ = "0.0.1"
 
 
-class Article(parsers.Mercury):
+class Article(BaseArticle):
     def __getattr__(self, key):
         return self.fields[key]
-
-
-class Table(parsers.Table):
-    def pretty(self):
-        # https://coderwall.com/p/gmxnqg/pretty-printing-a-python-dictionary
-        return json.dumps(self.data, sort_keys=True, indent=4)
 
 
 class Url(str):

@@ -389,3 +389,29 @@ ATTRIBUTES = {
     ]
 }
 
+
+class Attributes(object):
+    """Given a beautiful soup element this will remove any elements that aren't 
+    supported for that element's tagname"""
+    @property
+    def supported(self):
+        """Returns a set of all the attributes this element supports"""
+        attrs = ATTRIBUTES.get(self.element.name, [])
+        attrs.extend(ATTRIBUTES["Global attribute"])
+        return set(attrs)
+
+    def __init__(self, element):
+        """create an Attributes instance
+
+        :param element: bs4 element, the element whose attributes you want to sanitize
+        """
+        self.element = element
+
+    def clean(self):
+        """sanitize the element"""
+        supported = self.supported
+        for attr in self.element.attrs.keys():
+            if attr not in supported:
+                del self.element[attr]
+
+
