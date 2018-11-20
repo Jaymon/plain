@@ -7,25 +7,49 @@ from ..base import Base
 
 
 class Headers(object):
+    """Tracks header changes while the table is being parsed so each content row
+    can receive the correct headers"""
     def __init__(self):
         self.headers = defaultdict(dict)
         self.colgroups = defaultdict(list)
         self.keys = defaultdict(dict)
 
     def add_colgroup(self, offset, span, text):
+        """Add a colgroup col value
+
+        :param offset: int, the index of the column group
+        :param span: int, how many columns this group encompasses
+        :param text: str, the column grouping value
+        """
         for i in range(offset, offset + span):
             self.colgroups[i].append(text)
 
     def set_key(self, name, index, text):
+        """Set the key for the current row
+
+        :param name: str, the class name of the row
+        :param index: int, the column index the key should belong to
+        :param text: str, the key value
+        """
         if not text:
             text = str(index)
         self.keys[name][index] = text
 
     def set_header(self, name, offset, span, text):
+        """set a global table header, a global table header is a header that spans
+        more than one column (if the header (th element) spans only one column then
+        it is a key, not a header)
+
+        :param name: str, the class name of the row
+        :param offset: int, the index the header starts at
+        :param span: int, how many columns this header encompasses
+        :param text: str, the name of the header
+        """
         for i in range(offset, offset + span):
             self.headers[name][i] = text
 
     def get_key(self, index):
+        """Return the key's value at the column index"""
         ret = str(index)
         for name in self.keys.keys():
             if index in self.keys[name]:
@@ -34,6 +58,7 @@ class Headers(object):
         return ret
 
     def get_headers(self, index):
+        """Return all the headers that apply to the column index"""
         ret = []
         for name in self.headers.keys():
             ret.append(self.headers[name][index])
@@ -41,7 +66,14 @@ class Headers(object):
 
 
 class Table(Base):
-    """
+    """Parses a <table> element to make it easier to consume programmatically
+
+    :Example:
+        t = Table(url, body) # if body is not passed in url will be fetched
+        t.parse
+        for table in t.tables:
+            print(table)
+
     https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table
     """
 
@@ -62,6 +94,15 @@ class Table(Base):
         return datasets
 
     def is_header_row(self, tr, headers):
+        """decide if this row is a header row or content row
+
+        it looks like both table rows (header or content) can mix td and th and 
+        so this attempts to decide if the passed in tr is a header tr or not
+
+        :param tr: Element, the bs4 tr element
+        :param headers: Headers instance
+        :returns: boolean, True if this is a header row
+        """
         ret = False
 
         all_scope_col = True
@@ -150,6 +191,11 @@ class Table(Base):
         return int(cols_x), int(rows_y)
 
     def find_table(self, table):
+        """parse the passed in table element
+
+        :param table: bs4 element, the table
+        :returns: dict with 2 keys: caption and rows
+        """
         d = {
             "caption": "",
             "rows": [],
@@ -175,6 +221,12 @@ class Table(Base):
         #pout.v(headers, d)
 
     def find_content(self, table, headers):
+        """Find all the content rows of the table
+
+        :param table: bs4 element, the table
+        :param headers: Header instance, used to track keys/headers of each column
+        :returns: list, a list of the content rows of the table
+        """
         rows = []
         cols_x, rows_y = self.find_dimensions(table)
 
@@ -226,8 +278,13 @@ class Table(Base):
 
 
     def find_headers(self, tr, headers):
-        """
+        """Return the found headers of the tr element
+
         https://developer.mozilla.org/en-US/docs/Web/HTML/Element/th
+
+        :param tr: bs4 element, the table row that contains header (th elements) info
+        :param headers: Header instance, used to track keys/headers of each column, this
+            instance is updated without this method returning anything
         """
         offset = 0
         for th in tr.find_all(["th", "td"], recursive=False):
@@ -245,8 +302,14 @@ class Table(Base):
 
 
     def find_colgroup(self, colgroup, headers):
-        """
+        """find the column group of this table
+
         https://developer.mozilla.org/en-US/docs/Web/HTML/Element/colgroup
+
+        :param colgroup: bd4 element, the <colgroup>
+        :param headers: Header instance, used to track keys/headers of each column, this
+            instance is updated without this method returning anything
+        :returns: headers, the headers ref is also updated
         """
         offset = 0
 
@@ -269,6 +332,11 @@ class Table(Base):
         return headers
 
     def find_tables(self, soup):
+        """Find all the tables in the given bs4 soup
+
+        :param soup: bs4 soup
+        :returns: list, all the found and parsed <table> elements
+        """
         ret = []
         for table in soup.find_all("table"):
             r = self.find_table(table)
@@ -277,6 +345,11 @@ class Table(Base):
         return ret
 
     def find_dls(self, soup):
+        """Find all the dls in the given bs4 soup
+
+        :param soup: bs4 soup
+        :returns: list, all the found and parsed <dl> elements
+        """
         ret = []
         for dl in soup.find_all("dl"):
             rows = []
@@ -296,7 +369,6 @@ class Table(Base):
             ret.append(rows)
 
         return ret
-
 
 
 class Table2(Base):
