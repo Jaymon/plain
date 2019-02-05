@@ -4,4 +4,5 @@ from __future__ import unicode_literals, division, print_function, absolute_impo
 from .article import Mercury as Article
 from .table import Table
 from .tag import Attributes
+from .html import HTML
 

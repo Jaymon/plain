@@ -2,32 +2,9 @@
 from __future__ import unicode_literals, division, print_function, absolute_import
 import json
 
-from bs4 import BeautifulSoup
 import requests
 
-
-class Soup(BeautifulSoup):
-    """Small wrapper around Beautiful Soup that picks the best parser
-
-    this is a modified version of the Soup class found in brow.utils
-    """
-    def __init__(self, markup="", features=None, *args, **kwargs):
-        # https://www.crummy.com/software/BeautifulSoup/bs4/doc/#parser-installation
-        if not features:
-            features = "html.parser"
-            try:
-                import lxml
-                features = "lxml"
-
-            except ImportError:
-                try:
-                    import html5lib
-                    features = "html5lib"
-
-                except ImportError:
-                    pass
-
-        super(Soup, self).__init__(markup, features, *args, **kwargs)
+from ..soup import Soup
 
 
 class Base(object):

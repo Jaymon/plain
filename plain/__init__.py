@@ -7,7 +7,7 @@ import hashlib
 
 import requests
 
-from .compat.urllib import parse
+from .compat import parse
 from .parsers.html import (
     Table,
     Article as BaseArticle
@@ -17,7 +17,7 @@ from .parsers.html import (
 logger = logging.getLogger(__name__)
 
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 
 class Article(BaseArticle):

@@ -8,11 +8,12 @@ import logging
 import sys
 import json
 
-from bs4 import BeautifulSoup
 import testdata
 
 from plain import Article, Table, Url
 from plain.parsers.html.article import Mercury
+from plain.parsers.html import HTML
+from plain.soup import Soup
 #from plain.parsers.html.table import Headers
 
 
@@ -44,7 +45,7 @@ class TestCase(BaseTestCase):
 
     def get_soup(self, filename):
         html = self.get_html(filename)
-        soup = BeautifulSoup(self.body, "html.parser")
+        soup = Soup(self.body)
         return soup
 
 
@@ -146,6 +147,21 @@ class MercuryParserTest(TestCase):
 
 
 class TableTest(TestCase):
+    def test_header_error(self):
+        #html = self.get_html("tables_wikipedia1")
+#         t = Table(testdata.get_url(), html)
+#         t.parse()
+#         pout.v(t.tables[1])
+        col_count = 13
+        html = self.get_html("tables7")
+        t = Table(testdata.get_url(), html)
+        t.parse()
+        table = t.tables[0]
+        self.assertTrue(table.caption)
+        for r in table:
+            #pout.v(r["Icon"], r["Emoji"], r["Meaning"])
+            self.assertEqual(col_count, len(list(r.columns())))
+
     def test_dimensions(self):
         html = self.get_html("tables4")
         t = Table(testdata.get_url(), html)
@@ -466,7 +482,7 @@ class TableTest(TestCase):
 
 class UrlTest(TestCase):
     def test_utm(self):
-        original_url = "https://example.com/path/?utm_source=source&utm_campaign=campaign-source&utm_medium=medium&utm_term=blah-blah-blah"
+        original_url = "https://example.com/path/?utm_source=source&utm_campaign=campaign&utm_medium=med&utm_term=term"
         plain_url = Url(original_url)
         self.assertEqual("https://example.com/path/", plain_url)
 
@@ -477,4 +493,33 @@ class UrlTest(TestCase):
         original_url = "https://example.com/path/#anchor"
         plain_url = Url(original_url)
         self.assertEqual("https://example.com/path/", plain_url)
+
+
+class HTMLTest(TestCase):
+    def test_lifecycle(self):
+        s = HTML("foo<br />bar")
+        self.assertEqual("foo\nbar", s)
+        self.assertEqual("foo<br />bar", s.html)
+
+        s = HTML("&lt;:‑|<br />&gt;:)")
+        self.assertEqual("<:‑|\n>:)", s)
+        self.assertEqual("&lt;:‑|<br />&gt;:)", s.html)
+        self.assertEqual("<:‑|<br />>:)", s.unescaped_html)
+
+    def test_images(self):
+        html = 'foo <IMG src="bar.jpeg" /> che'
+        s_keep = HTML(html, keep_images=True)
+        s = HTML(html)
+        self.assertNotEqual(s, s_keep)
+
+
+class SoupTest(TestCase):
+    def test_wrapper(self):
+        s = '<p>foo &gt; bar <a href="http://che.com">che</a> baz</p>'
+        soup = Soup(s)
+        self.assertEqual(s, soup.inner_html())
+
+        p = soup.find("p")
+        self.assertEqual('foo &gt; bar <a href="http://che.com">che</a> baz', p.inner_html())
+
 

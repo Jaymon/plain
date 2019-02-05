@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, division, print_function, absolute_import
+import sys
 
-from .version import is_py2, is_py3
+# shamelessly ripped from https://github.com/kennethreitz/requests/blob/master/requests/compat.py
+# Syntax sugar.
+_ver = sys.version_info
+is_py2 = (_ver[0] == 2)
+is_py3 = (_ver[0] == 3)
+
 
 if is_py2:
     basestring = basestring
@@ -14,6 +20,11 @@ if is_py2:
         finally:
             tb = None
     """)
+
+    from HTMLParser import HTMLParser
+    import urlparse as parse
+    from StringIO import StringIO
+    unescape = HTMLParser.unescape
 
 
 elif is_py3:
@@ -31,6 +42,14 @@ elif is_py3:
             value = None
             tb = None
 
+    from html.parser import HTMLParser
+    from urllib import parse
+    from io import StringIO
+
+    try:
+        from html import unescape
+    except ImportError:
+        unescape = HTMLParser.unescape
 
 # TODO using reraise
 
@@ -57,3 +76,7 @@ elif is_py3:
 # if error_info:
 # 
 #             reraise(*error_info)
+
+String = unicode if is_py2 else str
+Bytes = str if is_py2 else bytes
+
