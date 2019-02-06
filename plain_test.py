@@ -161,6 +161,8 @@ class TableTest(TestCase):
         for r in table:
             #pout.v(r["Icon"], r["Emoji"], r["Meaning"])
             self.assertEqual(col_count, len(list(r.columns())))
+            self.assertTrue(r.get("Icon"))
+
 
     def test_dimensions(self):
         html = self.get_html("tables4")

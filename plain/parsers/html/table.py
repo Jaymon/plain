@@ -103,6 +103,17 @@ class Row(OrderedDict):
     def columns(self):
         return (v["value"] for v in self.values())
 
+    def get(self, k, default_val=None):
+        try:
+            ret = self[k]
+
+        except KeyError:
+            ret = default_val
+        return ret
+
+    def pop(self, *args, **kwargs):
+        raise NotImplementedError()
+
 
 class Rows(list):
     """This represents the entire table object, I would like to have named it Table
