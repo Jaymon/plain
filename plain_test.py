@@ -512,6 +512,11 @@ class HTMLTest(TestCase):
         s = HTML(html)
         self.assertNotEqual(s, s_keep)
 
+    def test_whitespace(self):
+        html = 'Sideways <a href="/wiki/Latin_1" class="mw-redirect" title="Latin 1">Latin</a>-only emoticons'
+        s = HTML(html)
+        self.assertEqual("Sideways Latin-only emoticons", s)
+
 
 class SoupTest(TestCase):
     def test_wrapper(self):

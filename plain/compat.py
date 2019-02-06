@@ -24,6 +24,8 @@ if is_py2:
     from HTMLParser import HTMLParser
     import urlparse as parse
     from StringIO import StringIO
+    from urllib import urlencode
+
     unescape = HTMLParser.unescape
 
 
@@ -44,6 +46,7 @@ elif is_py3:
 
     from html.parser import HTMLParser
     from urllib import parse
+    from urllib.parse import urlencode
     from io import StringIO
 
     try:

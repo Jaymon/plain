@@ -7,7 +7,7 @@ import hashlib
 
 import requests
 
-from .compat import parse
+from .compat import parse, urlencode
 from .parsers.html import (
     Table,
     Article as BaseArticle
@@ -17,7 +17,7 @@ from .parsers.html import (
 logger = logging.getLogger(__name__)
 
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 
 class Article(BaseArticle):
@@ -44,7 +44,7 @@ class Url(str):
     @classmethod
     def unparse_query(cls, query_kwargs):
         if not query_kwargs: return ""
-        return urllib.urlencode(query_kwargs, doseq=True)
+        return urlencode(query_kwargs, doseq=True)
 
     @classmethod
     def simplify(cls, original_url):

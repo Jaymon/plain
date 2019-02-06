@@ -264,7 +264,7 @@ class Table(Base):
 
         for c in table.children:
             if c.name == "caption":
-                d["caption"] = c.get_text(strip=True)
+                d["caption"] = HTML(c.inner_html())
 
             elif c.name == "colgroup":
                 # https://developer.mozilla.org/en-US/docs/Web/HTML/Element/colgroup
