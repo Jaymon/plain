@@ -4,6 +4,7 @@ from collections import defaultdict, OrderedDict
 
 from ..base import Base
 from .html import HTML
+from ...soup import Soup
 
 
 class Headers(object):
@@ -275,7 +276,7 @@ class Table(Base):
 
         for c in table.children:
             if c.name == "caption":
-                d["caption"] = HTML(c.inner_html())
+                d["caption"] = HTML(Soup.inner_html(c))
 
             elif c.name == "colgroup":
                 # https://developer.mozilla.org/en-US/docs/Web/HTML/Element/colgroup
@@ -318,7 +319,7 @@ class Table(Base):
                 else:
                     row = []
                     for col in tr.find_all(["td", "th"], recursive=False):
-                        text = HTML(col.inner_html(), keep_images=True)
+                        text = HTML(Soup.inner_html(col), keep_images=True)
                         row.append(text)
                         colspan = int(col.get("colspan", 1))
                         if colspan > 1:

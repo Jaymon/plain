@@ -17,7 +17,7 @@ from .parsers.html import (
 logger = logging.getLogger(__name__)
 
 
-__version__ = "0.0.5"
+__version__ = "0.0.6"
 
 
 class Article(BaseArticle):
